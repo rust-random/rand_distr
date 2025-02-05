@@ -6,13 +6,11 @@ on:
     paths-ignore:
       - "**.md"
       - "distr_test/**"
-      - "examples/**"
   pull_request:
     branches: [ master ]
     paths-ignore:
       - "**.md"
       - "distr_test/**"
-      - "examples/**"
 
 defaults:
   run:
