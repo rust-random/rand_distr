@@ -96,9 +96,9 @@ jobs:
           cargo generate-lockfile -Z minimal-versions
       - name: Test rand_distr
         run: |
-          cargo test --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --features=serde
-          cargo test --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --no-default-features
-          cargo test --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --no-default-features --features=std,std_math
+          cargo test --target ${{ matrix.target }} --features=serde
+          cargo test --target ${{ matrix.target }} --no-default-features
+          cargo test --target ${{ matrix.target }} --no-default-features --features=std,std_math
 
   test-cross:
     runs-on: ${{ matrix.os }}
@@ -127,4 +127,4 @@ jobs:
       - name: Test
         run: |
           # all stable features:
-          cross test --no-fail-fast --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --features=serde
+          cross test --no-fail-fast --target ${{ matrix.target }} --features=serde
