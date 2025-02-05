@@ -48,6 +48,10 @@ can be enabled. (Note that any other crate depending on `num-traits` with the
 [statrs]: https://github.com/boxtown/statrs
 [rand::distr]: https://rust-random.github.io/rand/rand/distr/index.html
 
+## Old Issues and Pull Requests
+
+- All closed Issues and merged Pull requests from before 5.February.2025 (version 0.5.0) can be found in the [rand](https://github.com/rust-random/rand) repository where this crate used to be.
+
 ## License
 
 `rand_distr` is distributed under the terms of both the MIT license and the
