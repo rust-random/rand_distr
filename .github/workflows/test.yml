@@ -43,16 +43,8 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
-      - name: rand
-        run: cargo doc --all-features --no-deps
-      - name: rand_core
-        run: cargo doc --all-features --package rand_core --no-deps
       - name: rand_distr
         run: cargo doc --all-features --package rand_distr --no-deps
-      - name: rand_chacha
-        run: cargo doc --all-features --package rand_chacha --no-deps
-      - name: rand_pcg
-        run: cargo doc --all-features --package rand_pcg --no-deps
 
   test:
     runs-on: ${{ matrix.os }}
@@ -102,35 +94,11 @@ jobs:
         if: ${{ matrix.variant == 'minimal_versions' }}
         run: |
           cargo generate-lockfile -Z minimal-versions
-      - name: Maybe nightly
-        if: ${{ matrix.toolchain == 'nightly' }}
-        run: |
-          cargo test --target ${{ matrix.target }} --features=nightly
-          cargo test --target ${{ matrix.target }} --all-features
-          cargo test --target ${{ matrix.target }} --lib --tests --no-default-features
-      - name: Test rand
-        run: |
-          cargo test --target ${{ matrix.target }} --lib --tests --no-default-features
-          cargo build --target ${{ matrix.target }} --no-default-features --features alloc,os_rng,small_rng,unbiased
-          cargo test --target ${{ matrix.target }} --lib --tests --no-default-features --features=alloc,os_rng,small_rng
-          cargo test --target ${{ matrix.target }} --examples
-      - name: Test rand (all stable features)
-        run: |
-          cargo test --target ${{ matrix.target }} --features=serde,log,small_rng
-      - name: Test rand_core
-        run: |
-          cargo test --target ${{ matrix.target }} --manifest-path rand_core/Cargo.toml
-          cargo test --target ${{ matrix.target }} --manifest-path rand_core/Cargo.toml --no-default-features
-          cargo test --target ${{ matrix.target }} --manifest-path rand_core/Cargo.toml --no-default-features --features=os_rng
       - name: Test rand_distr
         run: |
-          cargo test --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --features=serde
-          cargo test --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --no-default-features
-          cargo test --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --no-default-features --features=std,std_math
-      - name: Test rand_pcg
-        run: cargo test --target ${{ matrix.target }} --manifest-path rand_pcg/Cargo.toml --features=serde
-      - name: Test rand_chacha
-        run: cargo test --target ${{ matrix.target }} --manifest-path rand_chacha/Cargo.toml --features=serde
+          cargo test --target ${{ matrix.target }} --features=serde
+          cargo test --target ${{ matrix.target }} --no-default-features
+          cargo test --target ${{ matrix.target }} --no-default-features --features=std,std_math
 
   test-cross:
     runs-on: ${{ matrix.os }}
@@ -159,63 +127,4 @@ jobs:
       - name: Test
         run: |
           # all stable features:
-          cross test --no-fail-fast --target ${{ matrix.target }} --features=serde,log,small_rng
-          cross test --no-fail-fast --target ${{ matrix.target }} --examples
-          cross test --no-fail-fast --target ${{ matrix.target }} --manifest-path rand_core/Cargo.toml
-          cross test --no-fail-fast --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --features=serde
-          cross test --no-fail-fast --target ${{ matrix.target }} --manifest-path rand_pcg/Cargo.toml --features=serde
-          cross test --no-fail-fast --target ${{ matrix.target }} --manifest-path rand_chacha/Cargo.toml
-
-  test-miri:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install toolchain
-        run: |
-          rustup toolchain install nightly --component miri
-          rustup override set nightly
-          cargo miri setup
-      - name: Test rand
-        run: |
-          cargo miri test --no-default-features --lib --tests
-          cargo miri test --features=log,small_rng
-          cargo miri test --manifest-path rand_core/Cargo.toml
-          cargo miri test --manifest-path rand_core/Cargo.toml --features=serde
-          cargo miri test --manifest-path rand_core/Cargo.toml --no-default-features
-          #cargo miri test --manifest-path rand_distr/Cargo.toml # no unsafe and lots of slow tests
-          cargo miri test --manifest-path rand_pcg/Cargo.toml --features=serde
-          cargo miri test --manifest-path rand_chacha/Cargo.toml --no-default-features
-
-  test-no-std:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install toolchain
-        uses: dtolnay/rust-toolchain@nightly
-        with:
-            target: thumbv6m-none-eabi
-      - name: Build top-level only
-        run: cargo build --target=thumbv6m-none-eabi --no-default-features
-
-  # Disabled due to lack of known working compiler versions (not older than our MSRV)
-  # test-avr:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Install toolchain
-  #       uses: dtolnay/rust-toolchain@nightly
-  #       with:
-  #           components: rust-src
-  #     - name: Build top-level only
-  #       run: cargo build -Z build-std=core --target=avr-unknown-gnu-atmega328 --no-default-features
-
-  test-ios:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install toolchain
-        uses: dtolnay/rust-toolchain@nightly
-        with:
-            target: aarch64-apple-ios
-      - name: Build top-level only
-        run: cargo build --target=aarch64-apple-ios
+          cross test --no-fail-fast --target ${{ matrix.target }} --features=serde
