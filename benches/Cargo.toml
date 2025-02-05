@@ -7,47 +7,14 @@ publish = false
 [dependencies]
 
 [dev-dependencies]
-rand = { path = "..", features = ["small_rng", "nightly"] }
-rand_pcg = { path = "../rand_pcg" }
-rand_chacha = { path = "../rand_chacha" }
-rand_distr = { path = "../rand_distr" }
+rand = "0.9"
+rand_pcg = "0.9"
+rand_distr = { path = ".." }
 criterion = "0.5"
 criterion-cycles-per-byte = "0.6"
 
 [[bench]]
-name = "array"
-harness = false
-
-[[bench]]
-name = "bool"
-harness = false
-
-[[bench]]
 name = "distr"
-harness = false
-
-[[bench]]
-name = "generators"
-harness = false
-
-[[bench]]
-name = "seq_choose"
-harness = false
-
-[[bench]]
-name = "shuffle"
-harness = false
-
-[[bench]]
-name = "standard"
-harness = false
-
-[[bench]]
-name = "uniform"
-harness = false
-
-[[bench]]
-name = "uniform_float"
 harness = false
 
 [[bench]]
