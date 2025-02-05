@@ -128,16 +128,3 @@ jobs:
         run: |
           # all stable features:
           cross test --no-fail-fast --target ${{ matrix.target }} --manifest-path rand_distr/Cargo.toml --features=serde
-
-  test-miri:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install toolchain
-        run: |
-          rustup toolchain install nightly --component miri
-          rustup override set nightly
-          cargo miri setup
-      - name: Test rand
-        run: |
-          #cargo miri test --manifest-path rand_distr/Cargo.toml # no unsafe and lots of slow tests
