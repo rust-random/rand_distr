@@ -39,7 +39,6 @@ can be enabled. (Note that any other crate depending on `num-traits` with the
 
 ## Links
 
--   [API documentation (master)](https://rust-random.github.io/rand/rand_distr)
 -   [API documentation (docs.rs)](https://docs.rs/rand_distr)
 -   [Changelog](CHANGELOG.md)
 -   [The Rand project](https://github.com/rust-random/rand)
