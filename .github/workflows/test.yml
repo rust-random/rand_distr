@@ -94,6 +94,11 @@ jobs:
         if: ${{ matrix.variant == 'minimal_versions' }}
         run: |
           cargo generate-lockfile -Z minimal-versions
+      - name: Build rand_distr
+        run: |
+          cargo build --target ${{ matrix.target }} --features=serde
+          cargo build --target ${{ matrix.target }} --no-default-features
+          cargo build --target ${{ matrix.target }} --no-default-features --features=std,std_math
       - name: Test rand_distr
         run: |
           cargo test --target ${{ matrix.target }} --features=serde
