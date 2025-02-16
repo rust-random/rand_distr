@@ -9,6 +9,8 @@
 //! Math helper functions
 
 use crate::ziggurat_tables;
+#[allow(unused_imports)]
+use num_traits::Float; // Used for `no_std` to get `f64::abs()` working before `rustc 1.84`
 use rand::distr::hidden_export::IntoFloat;
 use rand::Rng;
 
