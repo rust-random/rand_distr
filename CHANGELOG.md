@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - unreleased
+
+### API changes
+- `Dirichlet` no longer uses `const` generics, which means that its size is not required at compile time. Essentially a revert of #1292
+- Add `Dirichlet::new_with_size` constructor
+
 ## [0.5.1]
 
 ### Testing
