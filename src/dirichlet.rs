@@ -330,18 +330,6 @@ where
     }
 }
 
-impl<F, const N : usize> crate::multi::MultiDistribution<[F]> for Dirichlet<F, N>
-where
-    F: Float,
-    StandardNormal: Distribution<F>,
-    Exp1: Distribution<F>,
-    Open01: Distribution<F>,
-{
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
-        let samples = Distribution::sample(self, rng);
-        output.copy_from_slice(&samples);
-    }
-}
 
 #[cfg(test)]
 mod test {
