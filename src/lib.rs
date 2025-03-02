@@ -96,8 +96,6 @@ pub use rand::distr::{
     StandardUniform, Uniform,
 };
 
-pub use multi::MultiDistribution;
-
 pub use self::beta::{Beta, Error as BetaError};
 pub use self::binomial::{Binomial, Error as BinomialError};
 pub use self::cauchy::{Cauchy, Error as CauchyError};
