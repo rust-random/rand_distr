@@ -10,7 +10,7 @@
 //! The dirichlet distribution `Dirichlet(α₁, α₂, ..., αₙ)`.
 
 #![cfg(feature = "alloc")]
-use crate::{Beta, Distribution, Exp1, Gamma, Open01, StandardNormal};
+use crate::{multi::MultiDistribution, Beta, Distribution, Exp1, Gamma, Open01, StandardNormal};
 use core::fmt;
 use num_traits::{Float, NumCast};
 use rand::Rng;
@@ -68,26 +68,24 @@ where
     }
 }
 
-impl<F, const N: usize> Distribution<[F; N]> for DirichletFromGamma<F, N>
+impl<F, const N: usize> MultiDistribution<[F; N]> for DirichletFromGamma<F, N>
 where
     F: Float,
     StandardNormal: Distribution<F>,
     Exp1: Distribution<F>,
     Open01: Distribution<F>,
 {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> [F; N] {
-        let mut samples = [F::zero(); N];
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F; N]) {
         let mut sum = F::zero();
 
-        for (s, g) in samples.iter_mut().zip(self.samplers.iter()) {
+        for (s, g) in output.iter_mut().zip(self.samplers.iter()) {
             *s = g.sample(rng);
             sum = sum + *s;
         }
         let invacc = F::one() / sum;
-        for s in samples.iter_mut() {
+        for s in output.iter_mut() {
             *s = *s * invacc;
         }
-        samples
     }
 }
 
@@ -149,24 +147,22 @@ where
     }
 }
 
-impl<F, const N: usize> Distribution<[F; N]> for DirichletFromBeta<F, N>
+impl<F, const N: usize> MultiDistribution<[F; N]> for DirichletFromBeta<F, N>
 where
     F: Float,
     StandardNormal: Distribution<F>,
     Exp1: Distribution<F>,
     Open01: Distribution<F>,
 {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> [F; N] {
-        let mut samples = [F::zero(); N];
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F; N]) {
         let mut acc = F::one();
 
-        for (s, beta) in samples.iter_mut().zip(self.samplers.iter()) {
+        for (s, beta) in output.iter_mut().zip(self.samplers.iter()) {
             let beta_sample = beta.sample(rng);
             *s = acc * beta_sample;
             acc = acc * (F::one() - beta_sample);
         }
-        samples[N - 1] = acc;
-        samples
+        output[N - 1] = acc;
     }
 }
 
@@ -315,18 +311,33 @@ where
     }
 }
 
-impl<F, const N: usize> Distribution<[F; N]> for Dirichlet<F, N>
+impl<F, const N: usize> MultiDistribution<[F; N]> for Dirichlet<F, N>
 where
     F: Float,
     StandardNormal: Distribution<F>,
     Exp1: Distribution<F>,
     Open01: Distribution<F>,
 {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> [F; N] {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F; N]) {
         match &self.repr {
-            DirichletRepr::FromGamma(dirichlet) => dirichlet.sample(rng),
-            DirichletRepr::FromBeta(dirichlet) => dirichlet.sample(rng),
+            DirichletRepr::FromGamma(dirichlet) => dirichlet.sample(rng, output),
+            DirichletRepr::FromBeta(dirichlet) => dirichlet.sample(rng, output),
         }
+    }
+}
+
+impl<F, const N: usize> Distribution<[F; N]> for Dirichlet<F, N>
+where
+    F: Float,
+    StandardNormal: Distribution<F>,
+    Exp1: Distribution<F>,
+    Open01: Distribution<F>,
+    Dirichlet<F, N>: MultiDistribution<[F; N]>,
+{
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> [F; N] {
+        let mut output = [F::zero(); N];
+        MultiDistribution::sample(self, rng, &mut output);
+        output
     }
 }
 
@@ -338,7 +349,7 @@ mod test {
     fn test_dirichlet() {
         let d = Dirichlet::new([1.0, 2.0, 3.0]).unwrap();
         let mut rng = crate::test::rng(221);
-        let samples = d.sample(&mut rng);
+        let samples = Distribution::sample(&d, &mut rng);
         assert!(samples.into_iter().all(|x: f64| x > 0.0));
     }
 
@@ -394,7 +405,7 @@ mod test {
         let mut rng = crate::test::rng(seed);
         let mut sums = [0.0; N];
         for _ in 0..n {
-            let samples = d.sample(&mut rng);
+            let samples = Distribution::sample(&d, &mut rng);
             for i in 0..N {
                 sums[i] += samples[i];
             }
