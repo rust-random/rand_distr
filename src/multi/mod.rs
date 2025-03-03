@@ -12,3 +12,7 @@ pub trait MultiDistribution<S: ?Sized> {
     /// The method should panic if the buffer is too small to hold the samples.
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut S);
 }
+
+pub use dirichlet::Dirichlet;
+
+mod dirichlet;

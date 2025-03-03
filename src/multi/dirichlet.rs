@@ -403,7 +403,7 @@ mod test {
         let alpha_sum: f64 = alpha.iter().sum();
         let expected_mean = alpha.map(|x| x / alpha_sum);
         for i in 0..N {
-            assert_almost_eq!(sample_mean[i], expected_mean[i], rtol);
+            average::assert_almost_eq!(sample_mean[i], expected_mean[i], rtol);
         }
     }
 
