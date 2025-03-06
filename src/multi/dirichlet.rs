@@ -262,7 +262,7 @@ impl fmt::Display for Error {
                 "failed to create required Gamma distribution for Dirichlet distribution"
             }
             Error::FailedToCreateBeta => {
-                "failed to create required Beta distribition for Dirichlet distribution"
+                "failed to create required Beta distribution for Dirichlet distribution"
             }
         })
     }
