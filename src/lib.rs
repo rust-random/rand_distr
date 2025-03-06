@@ -72,7 +72,7 @@
 //!   - [`Beta`] distribution
 //!   - [`Triangular`] distribution
 //! - Multivariate probability distributions
-//!   - [`Dirichlet`] distribution
+//!   - [`multi::Dirichlet`] distribution
 //!   - [`UnitSphere`] distribution
 //!   - [`UnitBall`] distribution
 //!   - [`UnitCircle`] distribution
