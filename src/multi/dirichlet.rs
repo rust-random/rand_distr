@@ -210,7 +210,8 @@ where
 ///
 /// ```
 /// use rand::prelude::*;
-/// use rand_distr::Dirichlet;
+/// use rand_distr::multi::Dirichlet;
+/// use rand_distr::multi::MultiDistribution;
 ///
 /// let dirichlet = Dirichlet::new([1.0, 2.0, 3.0]).unwrap();
 /// let samples = dirichlet.sample(&mut rand::rng());
