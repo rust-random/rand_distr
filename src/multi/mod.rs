@@ -1,16 +1,28 @@
 //! Contains Multi-dimensional distributions.
 //!
 //! We provide a trait `MultiDistribution` which allows to sample from a multi-dimensional distribution without extra allocations.
-//! All multi-dimensional distributions should implement this trait addidionally to the `Distribution` trait returning a `Vec` of samples.
+//! All multi-dimensional distributions implement `MultiDistribution` instead of the `Distribution` trait.
 
+use alloc::vec::Vec;
 use rand::Rng;
 
 /// This trait allows to sample from a multi-dimensional distribution without extra allocations.
-/// Typically distributions will implement `MultiDistribution<[F]>` where `F` is the type of the samples.
-pub trait MultiDistribution<S: ?Sized> {
-    /// Sample from the distribution using the given random number generator and write the result to `output`.
-    /// The method should panic if the buffer is too small to hold the samples.
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut S);
+/// For convenience it also provides a `sample` method which returns the result as a `Vec`.
+pub trait MultiDistribution<T> {
+    /// returns the length of one sample (dimension of the distribution)
+    fn sample_len(&self) -> usize;
+    /// samples from the distribution and writes the result to `buf`
+    fn sample_to_buf<R: Rng + ?Sized>(&self, rng: &mut R, buf: &mut [T]);
+    /// samples from the distribution and returns the result as a `Vec`, to avoid extra allocations use `sample_to_buf`
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec<T>
+    where
+        T: Default,
+    {
+        let mut buf = Vec::new();
+        buf.resize_with(self.sample_len(), || T::default());
+        self.sample_to_buf(rng, &mut buf);
+        buf
+    }
 }
 
 pub use dirichlet::Dirichlet;

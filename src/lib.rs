@@ -130,7 +130,7 @@ pub use num_traits;
 
 #[cfg(feature = "alloc")]
 pub mod weighted;
-
+#[cfg(feature = "alloc")]
 pub mod multi;
 
 #[cfg(test)]
