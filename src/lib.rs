@@ -129,9 +129,9 @@ pub use student_t::StudentT;
 pub use num_traits;
 
 #[cfg(feature = "alloc")]
-pub mod weighted;
-#[cfg(feature = "alloc")]
 pub mod multi;
+#[cfg(feature = "alloc")]
+pub mod weighted;
 
 #[cfg(test)]
 #[macro_use]
