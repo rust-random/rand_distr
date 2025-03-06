@@ -504,7 +504,9 @@ fn dirichlet_stability() {
 
     let mut rng = get_rng(223);
     assert_eq!(
-        multi::Dirichlet::new([1.0, 2.0, 3.0]).unwrap().sample(&mut rng),
+        multi::Dirichlet::new([1.0, 2.0, 3.0])
+            .unwrap()
+            .sample(&mut rng),
         [0.12941567177708177, 0.4702121891675036, 0.4003721390554146]
     );
     assert_eq!(
@@ -519,7 +521,9 @@ fn dirichlet_stability() {
     );
     // Test stability for the case where all alphas are less than 0.1.
     assert_eq!(
-        multi::Dirichlet::new([0.05, 0.025, 0.075, 0.05]).unwrap().sample(&mut rng),
+        multi::Dirichlet::new([0.05, 0.025, 0.075, 0.05])
+            .unwrap()
+            .sample(&mut rng),
         [
             0.00027580456855692104,
             2.296135759821706e-20,
