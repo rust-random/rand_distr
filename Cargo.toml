@@ -43,6 +43,6 @@ rand_pcg = { version = "0.9.0" }
 # For inline examples
 rand = { version = "0.9.0", features = ["small_rng"] }
 # Histogram implementation for testing uniformity
-average = { version = "0.15", features = [ "std" ] }
+average = { version = "0.16", features = [ "std" ] }
 # Special functions for testing distributions
 special = "0.11.0"
