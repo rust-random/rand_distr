@@ -43,7 +43,7 @@ can be enabled. (Note that any other crate depending on `num-traits` with the
 -   [The Rand project](https://github.com/rust-random/rand)
 
 
-[statrs]: https://github.com/boxtown/statrs
+[statrs]: https://github.com/statrs-dev/statrs
 [rand::distr]: https://rust-random.github.io/rand/rand/distr/index.html
 
 ## Old Issues and Pull Requests
