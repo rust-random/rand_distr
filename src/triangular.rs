@@ -129,7 +129,7 @@ mod test {
             (-4., -0.5, -2., -4.0 + 3.5f64.sqrt()),
         ] {
             #[cfg(feature = "std")]
-            std::println!("{} {} {} {}", min, max, mode, median);
+            std::println!("{min} {max} {mode} {median}");
             let distr = Triangular::new(min, max, mode).unwrap();
             // Test correct value at median:
             assert_eq!(distr.sample(&mut half_rng), median);
