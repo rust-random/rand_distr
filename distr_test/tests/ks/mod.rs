@@ -112,8 +112,8 @@ pub fn test_continuous(seed: u64, dist: impl Distribution<f64>, cdf: impl Fn(f64
 
     let critical_value = critical_value();
 
-    println!("KS statistic: {}", ks_statistic);
-    println!("Critical value: {}", critical_value);
+    println!("KS statistic: {ks_statistic}");
+    println!("Critical value: {critical_value}");
     assert!(ks_statistic < critical_value);
 }
 
@@ -131,7 +131,7 @@ where
     // This critical value is bigger than it could be for discrete distributions, but because of large sample sizes this should not matter too much
     let critical_value = critical_value();
 
-    println!("KS statistic: {}", ks_statistic);
-    println!("Critical value: {}", critical_value);
+    println!("KS statistic: {ks_statistic}");
+    println!("Critical value: {critical_value}");
     assert!(ks_statistic < critical_value);
 }
