@@ -43,6 +43,12 @@ use rand::Rng;
 /// let v = bin.sample(&mut rand::rng());
 /// println!("{} is from a binomial distribution", v);
 /// ```
+///
+/// # Numerics
+/// The implementation uses `f64` internally, which leads to rounding errors for big numbers.
+/// For very large samples (`> 2^53`) the least significant bits of the output will not be random.
+/// This means that something like `bin.sample(&mut rand::rng()) % 4` will not follow the correct distribution.
+/// The more significant bits should be correctly distributed.
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Binomial {
