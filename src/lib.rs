@@ -198,6 +198,7 @@ mod hypergeometric;
 mod inverse_gaussian;
 mod normal;
 mod normal_inverse_gaussian;
+mod normal_truncated;
 mod pareto;
 mod pert;
 pub(crate) mod poisson;
