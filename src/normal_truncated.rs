@@ -1,10 +1,9 @@
 use rand::{distr::Distribution, Rng};
 
-pub struct NormalTruncated {
-    mean: f64,
-    stddev: f64,
-    lower: f64,
-    upper: f64,
+pub struct NormalTruncated(Method);
+pub enum Method {
+    Rejection(NormalTruncatedRejection),
+    OneSided(),
 }
 
 pub enum Error {
@@ -16,15 +15,21 @@ impl NormalTruncated {
         if stddev <= 0.0 {
             return Err(Error::NonPosStdDev);
         }
-        Ok(NormalTruncated {
-            mean,
-            stddev,
-            lower,
-            upper,
-        })
+        
+        // When the lower bound is smaller than the mean, naive rejection sampling will have at least 
+        if lower < mean {
+            return Ok(NormalTruncated(Method::Rejection(NormalTruncatedRejection {
+                normal: crate::Normal::new(mean, stddev).unwrap(),
+                lower,
+                upper,
+            })));
+        } 
+        todo!()
     }
 }
 
+/// A truncated normal distribution using naive rejection sampling.
+/// We use this when the acceptance rate is high enough.
 struct NormalTruncatedRejection {
     normal: crate::Normal<f64>,
     lower: f64,
