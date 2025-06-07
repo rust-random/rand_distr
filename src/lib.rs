@@ -72,7 +72,7 @@
 //!   - [`Beta`] distribution
 //!   - [`Triangular`] distribution
 //! - Multivariate probability distributions
-//!   - [`Dirichlet`] distribution
+//!   - [`multi::Dirichlet`] distribution
 //!   - [`UnitSphere`] distribution
 //!   - [`UnitBall`] distribution
 //!   - [`UnitCircle`] distribution
@@ -100,8 +100,6 @@ pub use self::beta::{Beta, Error as BetaError};
 pub use self::binomial::{Binomial, Error as BinomialError};
 pub use self::cauchy::{Cauchy, Error as CauchyError};
 pub use self::chi_squared::{ChiSquared, Error as ChiSquaredError};
-#[cfg(feature = "alloc")]
-pub use self::dirichlet::{Dirichlet, Error as DirichletError};
 pub use self::exponential::{Error as ExpError, Exp, Exp1};
 pub use self::fisher_f::{Error as FisherFError, FisherF};
 pub use self::frechet::{Error as FrechetError, Frechet};
@@ -130,6 +128,8 @@ pub use student_t::StudentT;
 
 pub use num_traits;
 
+#[cfg(feature = "alloc")]
+pub mod multi;
 #[cfg(feature = "alloc")]
 pub mod weighted;
 
@@ -188,7 +188,6 @@ mod beta;
 mod binomial;
 mod cauchy;
 mod chi_squared;
-mod dirichlet;
 mod exponential;
 mod fisher_f;
 mod frechet;
