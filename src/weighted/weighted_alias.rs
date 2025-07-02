@@ -79,6 +79,7 @@ pub struct WeightedAliasIndex<W: AliasableWeight> {
     no_alias_odds: Box<[W]>,
     uniform_index: Uniform<u32>,
     uniform_within_weight_sum: Uniform<W>,
+    weight_sum: W,
 }
 
 impl<W: AliasableWeight> WeightedAliasIndex<W> {
@@ -231,7 +232,43 @@ impl<W: AliasableWeight> WeightedAliasIndex<W> {
             no_alias_odds,
             uniform_index,
             uniform_within_weight_sum,
+            weight_sum,
         })
+    }
+
+    /// Reconstructs and returns the original weights used to create the distribution.
+    ///
+    /// This method has `O(n)` time complexity, where `n` is the number of weights.
+    pub fn weights(&self) -> Vec<W> {
+        let n = self.aliases.len();
+        if n == 0 {
+            return Vec::new();
+        }
+
+        // `n` was validated in the constructor.
+        let n_converted = W::try_from_u32_lossy(n as u32).unwrap();
+        let weight_sum = self.weight_sum;
+
+        // pre-calculate the total contribution each index receives from serving
+        // as an alias for other indices.
+        let mut alias_contributions = vec![W::ZERO; n];
+        for j in 0..n {
+            if self.no_alias_odds[j] < weight_sum {
+                let contribution = weight_sum - self.no_alias_odds[j];
+                let alias_index = self.aliases[j] as usize;
+                alias_contributions[alias_index] += contribution;
+            }
+        }
+
+        // Reconstruct each weight by combining its direct `no_alias_odds`
+        // with its total `alias_contributions` and scaling the result.
+        let mut reconstructed_weights = Vec::with_capacity(n);
+        for k in 0..n {
+            let total_odds = self.no_alias_odds[k] + alias_contributions[k];
+            reconstructed_weights.push(total_odds / n_converted);
+        }
+
+        reconstructed_weights
     }
 }
 
@@ -271,6 +308,7 @@ where
             no_alias_odds: self.no_alias_odds.clone(),
             uniform_index: self.uniform_index,
             uniform_within_weight_sum: self.uniform_within_weight_sum.clone(),
+            weight_sum: self.weight_sum.clone(),
         }
     }
 }
@@ -501,6 +539,48 @@ mod test {
             WeightedAliasIndex::new(vec![W::MAX, W::MAX]).unwrap_err(),
             Error::InvalidWeight
         );
+    }
+
+    #[test]
+    fn test_weights_reconstruction() {
+        // Standard integers
+        {
+            let weights_i32 = vec![10, 2, 8, 0, 30, 5];
+            let dist_i32 = WeightedAliasIndex::new(weights_i32.clone()).unwrap();
+            assert_eq!(weights_i32, dist_i32.weights());
+        }
+
+        // Uniform weights
+        {
+            let weights_u64 = vec![1, 1, 1, 1, 1];
+            let dist_u64 = WeightedAliasIndex::new(weights_u64.clone()).unwrap();
+            assert_eq!(weights_u64, dist_u64.weights());
+        }
+
+        // Floating point
+        {
+            const EPSILON: f64 = 1e-9;
+            let weights_f64 = vec![0.5, 0.2, 0.3, 0.0, 1.5, 0.88];
+            let dist_f64 = WeightedAliasIndex::new(weights_f64.clone()).unwrap();
+            let reconstructed_f64 = dist_f64.weights();
+
+            assert_eq!(weights_f64.len(), reconstructed_f64.len());
+            for (original, reconstructed) in weights_f64.iter().zip(reconstructed_f64.iter()) {
+                assert!(
+                    f64::abs(original - reconstructed) < EPSILON,
+                    "Weight reconstruction failed: original {}, reconstructed {}",
+                    original,
+                    reconstructed
+                );
+            }
+        }
+
+        // Single item
+        {
+            let weights_single = vec![42_u32];
+            let dist_single = WeightedAliasIndex::new(weights_single.clone()).unwrap();
+            assert_eq!(weights_single, dist_single.weights());
+        }
     }
 
     #[test]
