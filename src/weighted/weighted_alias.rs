@@ -247,14 +247,13 @@ impl<W: AliasableWeight> WeightedAliasIndex<W> {
 
         // `n` was validated in the constructor.
         let n_converted = W::try_from_u32_lossy(n as u32).unwrap();
-        let weight_sum = self.weight_sum;
 
         // pre-calculate the total contribution each index receives from serving
         // as an alias for other indices.
         let mut alias_contributions = vec![W::ZERO; n];
         for j in 0..n {
-            if self.no_alias_odds[j] < weight_sum {
-                let contribution = weight_sum - self.no_alias_odds[j];
+            if self.no_alias_odds[j] < self.weight_sum {
+                let contribution = self.weight_sum - self.no_alias_odds[j];
                 let alias_index = self.aliases[j] as usize;
                 alias_contributions[alias_index] += contribution;
             }
