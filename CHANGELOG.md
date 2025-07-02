@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mark `WeightError`, `PoissonError`, `BinomialError` as `#[non_exhaustive]` (#1480)
 - Remove support for usage of `isize` as a `WeightedAliasIndex` weight (#1487)
 - Change parameter type of `Zipf::new`: `n` is now floating-point (#1518)
+- Add `WeightedAlias::weights()` to enumerate weights in O(n)
 
 ### API changes: renames
 - Move `Slice` -> `slice::Choose`, `EmptySlice` -> `slice::Empty` (#1548)
