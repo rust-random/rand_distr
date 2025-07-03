@@ -261,13 +261,13 @@ impl<W: AliasableWeight> WeightedAliasIndex<W> {
 
         // Reconstruct each weight by combining its direct `no_alias_odds`
         // with its total `alias_contributions` and scaling the result.
-        let mut reconstructed_weights = Vec::with_capacity(n);
-        for k in 0..n {
-            let total_odds = self.no_alias_odds[k] + alias_contributions[k];
-            reconstructed_weights.push(total_odds / n_converted);
-        }
-
-        reconstructed_weights
+        self.no_alias_odds
+            .iter()
+            .zip(&alias_contributions)
+            .map(|(&no_alias_odd, &alias_contribution)| {
+                (no_alias_odd + alias_contribution) / n_converted
+            })
+            .collect()
     }
 }
 
@@ -307,7 +307,7 @@ where
             no_alias_odds: self.no_alias_odds.clone(),
             uniform_index: self.uniform_index,
             uniform_within_weight_sum: self.uniform_within_weight_sum.clone(),
-            weight_sum: self.weight_sum.clone(),
+            weight_sum: self.weight_sum,
         }
     }
 }
