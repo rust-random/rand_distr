@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.2]
 
 ### API Changes
-- Add `WeightedAliasIndex::weights()` to enumerate weights in O(n) setup
+- Add `WeightedAliasIndex::weights()` to reconstruct the original weights in O(n)
 
 ### Testing
 - Added a test for `WeightedAliasIndex::weights()`

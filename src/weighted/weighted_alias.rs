@@ -238,12 +238,11 @@ impl<W: AliasableWeight> WeightedAliasIndex<W> {
 
     /// Reconstructs and returns the original weights used to create the distribution.
     ///
-    /// This method has `O(n)` time complexity, where `n` is the number of weights.
+    /// `O(n)` time, where `n` is the number of weights.
+    ///
+    /// Note: Exact values may not be recovered if `W` is a float.
     pub fn weights(&self) -> Vec<W> {
         let n = self.aliases.len();
-        if n == 0 {
-            return Vec::new();
-        }
 
         // `n` was validated in the constructor.
         let n_converted = W::try_from_u32_lossy(n as u32).unwrap();
