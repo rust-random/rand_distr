@@ -78,7 +78,9 @@ where
     fn sample_len(&self) -> usize {
         N
     }
-    fn sample_to_buf<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
+    fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
+        assert_eq!(output.len(), N);
+        
         let mut sum = F::zero();
 
         for (s, g) in output.iter_mut().zip(self.samplers.iter()) {
@@ -160,7 +162,9 @@ where
     fn sample_len(&self) -> usize {
         N
     }
-    fn sample_to_buf<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
+    fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
+        assert_eq!(output.len(), N);
+
         let mut acc = F::one();
 
         for (s, beta) in output.iter_mut().zip(self.samplers.iter()) {
@@ -328,12 +332,22 @@ where
     fn sample_len(&self) -> usize {
         N
     }
-    fn sample_to_buf<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
+    fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
         match &self.repr {
-            DirichletRepr::FromGamma(dirichlet) => dirichlet.sample_to_buf(rng, output),
-            DirichletRepr::FromBeta(dirichlet) => dirichlet.sample_to_buf(rng, output),
+            DirichletRepr::FromGamma(dirichlet) => dirichlet.sample_to_slice(rng, output),
+            DirichletRepr::FromBeta(dirichlet) => dirichlet.sample_to_slice(rng, output),
         }
     }
+}
+
+impl<F, const N: usize> Distribution<Vec<F>> for Dirichlet<F, N>
+where
+    F: Float + Default,
+    StandardNormal: Distribution<F>,
+    Exp1: Distribution<F>,
+    Open01: Distribution<F>,
+{
+    distribution_impl!(F);
 }
 
 #[cfg(test)]
