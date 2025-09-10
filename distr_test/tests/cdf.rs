@@ -252,11 +252,7 @@ fn studend_t() {
     fn cdf(x: f64, df: f64) -> f64 {
         let h = df / (df + x.powi(2));
         let ib = 0.5 * h.inc_beta(df / 2.0, 0.5, 0.5.ln_beta(df / 2.0));
-        if x < 0.0 {
-            ib
-        } else {
-            1.0 - ib
-        }
+        if x < 0.0 { ib } else { 1.0 - ib }
     }
 
     let parameters = [1.0, 10.0, 50.0];
@@ -436,11 +432,7 @@ fn poisson() {
         let dist = Poisson::new(lambda).unwrap();
         let analytic = statrs::distribution::Poisson::new(lambda).unwrap();
         test_discrete::<f64, Poisson<f64>, _>(seed as u64, dist, |k| {
-            if k < 0 {
-                0.0
-            } else {
-                analytic.cdf(k as u64)
-            }
+            if k < 0 { 0.0 } else { analytic.cdf(k as u64) }
         });
     }
 }

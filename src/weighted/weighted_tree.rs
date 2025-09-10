@@ -14,8 +14,8 @@ use core::ops::SubAssign;
 use super::{Error, Weight};
 use crate::Distribution;
 use alloc::vec::Vec;
-use rand::distr::uniform::{SampleBorrow, SampleUniform};
 use rand::Rng;
+use rand::distr::uniform::{SampleBorrow, SampleUniform};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 

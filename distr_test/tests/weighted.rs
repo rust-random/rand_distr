@@ -27,11 +27,7 @@ fn make_cdf(num: usize, f: impl Fn(i64) -> f64) -> impl Fn(i64) -> f64 {
     }
 
     move |i| {
-        if i < 0 {
-            0.0
-        } else {
-            cdf[i as usize]
-        }
+        if i < 0 { 0.0 } else { cdf[i as usize] }
     }
 }
 
@@ -167,11 +163,7 @@ fn choose_two_weighted_indexed() {
         assert!((cdf.last().unwrap() - 1.0).abs() < 1e-9);
 
         let cdf = |i| {
-            if i < 0 {
-                0.0
-            } else {
-                cdf[i as usize]
-            }
+            if i < 0 { 0.0 } else { cdf[i as usize] }
         };
 
         test_discrete(0, distr, cdf);

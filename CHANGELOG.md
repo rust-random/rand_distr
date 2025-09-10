@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.6.0] — Unreleased
-- Bump the MSRV to 1.85.0 in line with `rand` (#27)
+- Bump to MSRV 1.85.0 and Edition 2024 in line with `rand` (#27)
 
 ## [0.5.2]
 

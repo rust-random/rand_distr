@@ -10,7 +10,7 @@
 //! The Normal and derived distributions.
 
 use crate::utils::ziggurat;
-use crate::{ziggurat_tables, Distribution, Open01};
+use crate::{Distribution, Open01, ziggurat_tables};
 use core::fmt;
 use num_traits::Float;
 use rand::Rng;

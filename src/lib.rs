@@ -92,8 +92,8 @@ extern crate std;
 use rand::Rng;
 
 pub use rand::distr::{
-    uniform, Alphanumeric, Bernoulli, BernoulliError, Distribution, Iter, Open01, OpenClosed01,
-    StandardUniform, Uniform,
+    Alphanumeric, Bernoulli, BernoulliError, Distribution, Iter, Open01, OpenClosed01,
+    StandardUniform, Uniform, uniform,
 };
 
 pub use self::beta::{Beta, Error as BetaError};

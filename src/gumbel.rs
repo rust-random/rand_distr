@@ -160,10 +160,12 @@ mod tests {
                 }
             }
         }
-        assert!(proportions
-            .iter()
-            .zip(&probabilities)
-            .all(|(p_hat, p)| (p_hat - p).abs() < 0.003))
+        assert!(
+            proportions
+                .iter()
+                .zip(&probabilities)
+                .all(|(p_hat, p)| (p_hat - p).abs() < 0.003)
+        )
     }
 
     #[test]

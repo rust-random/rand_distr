@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use crate::{uniform::SampleUniform, Distribution, Uniform};
+use crate::{Distribution, Uniform, uniform::SampleUniform};
 use num_traits::Float;
 use rand::Rng;
 
