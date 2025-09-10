@@ -156,13 +156,12 @@ impl<W: Clone + PartialEq + PartialOrd + SampleUniform + SubAssign<W> + Weight>
 
     /// Removes the last weight and returns it, or [`None`] if it is empty.
     pub fn pop(&mut self) -> Option<W> {
-        self.subtotals.pop().map(|weight| {
+        self.subtotals.pop().inspect(|weight| {
             let mut index = self.len();
             while index != 0 {
                 index = (index - 1) / 2;
                 self.subtotals[index] -= weight.clone();
             }
-            weight
         })
     }
 
