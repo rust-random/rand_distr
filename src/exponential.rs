@@ -10,7 +10,7 @@
 //! The exponential distribution `Exp(λ)`.
 
 use crate::utils::ziggurat;
-use crate::{ziggurat_tables, Distribution};
+use crate::{Distribution, ziggurat_tables};
 use core::fmt;
 use num_traits::Float;
 use rand::Rng;
