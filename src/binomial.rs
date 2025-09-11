@@ -204,11 +204,7 @@ fn binv<R: Rng + ?Sized>(binv: Binv, flipped: bool, rng: &mut R) -> u64 {
         break x;
     };
 
-    if flipped {
-        binv.n - sample
-    } else {
-        sample
-    }
+    if flipped { binv.n - sample } else { sample }
 }
 
 #[allow(clippy::many_single_char_names)] // Same names as in the reference.
@@ -377,11 +373,7 @@ fn btpe<R: Rng + ?Sized>(btpe: Btpe, flipped: bool, rng: &mut R) -> u64 {
     assert!(y >= 0);
     let y = y as u64;
 
-    if flipped {
-        btpe.n - y
-    } else {
-        y
-    }
+    if flipped { btpe.n - y } else { y }
 }
 
 impl Distribution<u64> for Binomial {

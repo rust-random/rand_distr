@@ -10,7 +10,7 @@
 //! indices with probabilities proportional to a collection of weights.
 
 use super::Error;
-use crate::{uniform::SampleUniform, Distribution, Uniform};
+use crate::{Distribution, Uniform, uniform::SampleUniform};
 use alloc::{boxed::Box, vec, vec::Vec};
 use core::fmt;
 use core::iter::Sum;
