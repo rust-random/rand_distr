@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0 - Unreleased]
+
+### Additions
+- `MultiDistribution` trait to sample more efficiently from multi-dimensional distributions (#18)
+
+### Changes
+- Moved `Dirichlet` into the new `multi` module and implement `MultiDistribution` for it (#18)
+
 ## [0.5.1]
 
 ### Testing
