@@ -1,3 +1,11 @@
+// Copyright 2025 Developers of the Rand project.
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
 //! Contains Multi-dimensional distributions.
 //!
 //! We provide a trait `MultiDistribution` which allows to sample from a multi-dimensional distribution without extra allocations.
@@ -5,7 +13,7 @@
 
 use rand::Rng;
 
-/// This trait allows to sample from a multi-dimensional distribution without extra allocations.
+/// A standard abstraction for distributions with multi-dimensional results
 pub trait MultiDistribution<T> {
     /// returns the length of one sample (dimension of the distribution)
     fn sample_len(&self) -> usize;

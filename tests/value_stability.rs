@@ -500,8 +500,6 @@ fn weibull_stability() {
 #[cfg(feature = "alloc")]
 #[test]
 fn dirichlet_stability() {
-    use rand_distr::multi::MultiDistribution;
-
     let mut rng = get_rng(223);
     assert_eq!(
         multi::Dirichlet::new([1.0, 2.0, 3.0])
