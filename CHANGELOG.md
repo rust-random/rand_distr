@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changes
 - Moved `Dirichlet` into the new `multi` module and implement `MultiDistribution` for it (#18)
 
+## [0.5.2]
+
+### API Changes
+- Add `WeightedAliasIndex::weights()` to reconstruct the original weights in O(n)
+
+### Testing
+- Added a test for `WeightedAliasIndex::weights()`
+
 ## [0.5.1]
 
 ### Testing
