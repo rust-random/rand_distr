@@ -80,7 +80,7 @@ where
     }
     fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
         assert_eq!(output.len(), N);
-        
+
         let mut sum = F::zero();
 
         for (s, g) in output.iter_mut().zip(self.samplers.iter()) {

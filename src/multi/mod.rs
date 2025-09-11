@@ -13,15 +13,14 @@ pub trait MultiDistribution<T> {
     fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [T]);
 }
 
-
 macro_rules! distribution_impl {
     ($scalar:ident) => {
         fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec<$scalar> {
-                use crate::multi::MultiDistribution;
-                let mut buf = vec![Default::default(); self.sample_len()];
-                self.sample_to_slice(rng, &mut buf);
-                buf
-            }
+            use crate::multi::MultiDistribution;
+            let mut buf = vec![Default::default(); self.sample_len()];
+            self.sample_to_slice(rng, &mut buf);
+            buf
+        }
     };
 }
 
