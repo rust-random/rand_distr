@@ -287,7 +287,7 @@ mod test {
         let beta = Beta::<f64>::new(1e-3, 1e-3).unwrap();
         let mut rng = crate::test::rng(206);
         for i in 0..1000 {
-            assert!(!beta.sample(&mut rng).is_nan(), "failed at i={}", i);
+            assert!(!beta.sample(&mut rng).is_nan(), "failed at i={i}");
         }
     }
 

@@ -257,6 +257,9 @@ fn owen_t(h: f64, a: f64) -> f64 {
 }
 
 fn normal_cdf(x: f64, mean: f64, std_dev: f64) -> f64 {
+    // f64::erfc from feature `float_erf` may be used over special::Primitive::erfc
+    #![allow(unstable_name_collisions)]
+
     0.5 * ((mean - x) / (std_dev * core::f64::consts::SQRT_2)).erfc()
 }
 

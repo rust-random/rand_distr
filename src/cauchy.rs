@@ -141,11 +141,11 @@ mod test {
         }
         let median = median(&mut numbers);
         #[cfg(feature = "std")]
-        std::println!("Cauchy median: {}", median);
+        std::println!("Cauchy median: {median}");
         assert!((median - 10.0).abs() < 0.4); // not 100% certain, but probable enough
         let mean = sum / 1000.0;
         #[cfg(feature = "std")]
-        std::println!("Cauchy mean: {}", mean);
+        std::println!("Cauchy mean: {mean}");
         // for a Cauchy distribution the mean should not converge
         assert!((mean - 10.0).abs() > 0.4); // not 100% certain, but probable enough
     }

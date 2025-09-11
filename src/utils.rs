@@ -14,6 +14,24 @@ use num_traits::Float; // Used for `no_std` to get `f64::abs()` working before `
 use rand::distr::hidden_export::IntoFloat;
 use rand::Rng;
 
+/// An RNG yielding a constant value
+#[cfg(test)]
+pub(crate) struct ConstRng(pub(crate) u64);
+#[cfg(test)]
+impl rand::RngCore for ConstRng {
+    fn next_u32(&mut self) -> u32 {
+        self.next_u64() as u32
+    }
+
+    fn next_u64(&mut self) -> u64 {
+        self.0
+    }
+
+    fn fill_bytes(&mut self, _: &mut [u8]) {
+        unimplemented!()
+    }
+}
+
 /// Sample a random number using the Ziggurat method (specifically the
 /// ZIGNOR variant from Doornik 2005). Most of the arguments are
 /// directly from the paper:
@@ -25,7 +43,7 @@ use rand::Rng;
 /// * `F_DIFF`: precomputed values of $f(x_i) - f(x_{i+1})$
 /// * `pdf`: the probability density function
 /// * `zero_case`: manual sampling from the tail when we chose the
-///    bottom box (i.e. i == 0)
+///   bottom box (i.e. i == 0)
 #[inline(always)] // Forced inlining improves the perf by 25-50%
 pub(crate) fn ziggurat<R: Rng + ?Sized, P, Z>(
     rng: &mut R,

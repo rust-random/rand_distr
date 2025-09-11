@@ -113,11 +113,12 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use rand::{rngs::mock, Rng};
+    use crate::utils::ConstRng;
+    use rand::Rng;
 
     #[test]
     fn test_triangular() {
-        let mut half_rng = mock::StepRng::new(0x8000_0000_0000_0000, 0);
+        let mut half_rng = ConstRng(0x8000_0000_0000_0000);
         assert_eq!(half_rng.random::<f64>(), 0.5);
         for &(min, max, mode, median) in &[
             (-1., 1., 0., 0.),
@@ -128,7 +129,7 @@ mod test {
             (-4., -0.5, -2., -4.0 + 3.5f64.sqrt()),
         ] {
             #[cfg(feature = "std")]
-            std::println!("{} {} {} {}", min, max, mode, median);
+            std::println!("{min} {max} {mode} {median}");
             let distr = Triangular::new(min, max, mode).unwrap();
             // Test correct value at median:
             assert_eq!(distr.sample(&mut half_rng), median);

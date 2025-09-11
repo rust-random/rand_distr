@@ -395,7 +395,7 @@ fn geometric() {
 #[test]
 fn hypergeometric() {
     fn cdf(x: i64, n: u64, k: u64, n_: u64) -> f64 {
-        let min = if n_ + k > n { n_ + k - n } else { 0 };
+        let min = (n_ + k).saturating_sub(n);
         let max = k.min(n_);
         if x < min as i64 {
             return 0.0;
