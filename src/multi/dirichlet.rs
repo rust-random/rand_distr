@@ -10,7 +10,7 @@
 //! The dirichlet distribution `Dirichlet(α₁, α₂, ..., αₙ)`.
 
 #![cfg(feature = "alloc")]
-use crate::{Beta, Distribution, Exp1, Gamma, Open01, StandardNormal};
+use crate::{Beta, Distribution, Exp1, Gamma, Open01, StandardNormal, multi::MultiDistribution};
 use core::fmt;
 use num_traits::{Float, NumCast};
 use rand::Rng;
@@ -68,26 +68,29 @@ where
     }
 }
 
-impl<F, const N: usize> Distribution<[F; N]> for DirichletFromGamma<F, N>
+impl<F, const N: usize> MultiDistribution<F> for DirichletFromGamma<F, N>
 where
     F: Float,
     StandardNormal: Distribution<F>,
     Exp1: Distribution<F>,
     Open01: Distribution<F>,
 {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> [F; N] {
-        let mut samples = [F::zero(); N];
+    fn sample_len(&self) -> usize {
+        N
+    }
+    fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
+        assert_eq!(output.len(), N);
+
         let mut sum = F::zero();
 
-        for (s, g) in samples.iter_mut().zip(self.samplers.iter()) {
+        for (s, g) in output.iter_mut().zip(self.samplers.iter()) {
             *s = g.sample(rng);
             sum = sum + *s;
         }
         let invacc = F::one() / sum;
-        for s in samples.iter_mut() {
+        for s in output.iter_mut() {
             *s = *s * invacc;
         }
-        samples
     }
 }
 
@@ -149,24 +152,27 @@ where
     }
 }
 
-impl<F, const N: usize> Distribution<[F; N]> for DirichletFromBeta<F, N>
+impl<F, const N: usize> MultiDistribution<F> for DirichletFromBeta<F, N>
 where
     F: Float,
     StandardNormal: Distribution<F>,
     Exp1: Distribution<F>,
     Open01: Distribution<F>,
 {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> [F; N] {
-        let mut samples = [F::zero(); N];
+    fn sample_len(&self) -> usize {
+        N
+    }
+    fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
+        assert_eq!(output.len(), N);
+
         let mut acc = F::one();
 
-        for (s, beta) in samples.iter_mut().zip(self.samplers.iter()) {
+        for (s, beta) in output.iter_mut().zip(self.samplers.iter()) {
             let beta_sample = beta.sample(rng);
             *s = acc * beta_sample;
             acc = acc * (F::one() - beta_sample);
         }
-        samples[N - 1] = acc;
-        samples
+        output[N - 1] = acc;
     }
 }
 
@@ -208,7 +214,8 @@ where
 ///
 /// ```
 /// use rand::prelude::*;
-/// use rand_distr::Dirichlet;
+/// use rand_distr::multi::Dirichlet;
+/// use rand_distr::multi::MultiDistribution;
 ///
 /// let dirichlet = Dirichlet::new([1.0, 2.0, 3.0]).unwrap();
 /// let samples = dirichlet.sample(&mut rand::rng());
@@ -259,7 +266,7 @@ impl fmt::Display for Error {
                 "failed to create required Gamma distribution for Dirichlet distribution"
             }
             Error::FailedToCreateBeta => {
-                "failed to create required Beta distribition for Dirichlet distribution"
+                "failed to create required Beta distribution for Dirichlet distribution"
             }
         })
     }
@@ -315,19 +322,32 @@ where
     }
 }
 
-impl<F, const N: usize> Distribution<[F; N]> for Dirichlet<F, N>
+impl<F, const N: usize> MultiDistribution<F> for Dirichlet<F, N>
 where
     F: Float,
     StandardNormal: Distribution<F>,
     Exp1: Distribution<F>,
     Open01: Distribution<F>,
 {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> [F; N] {
+    fn sample_len(&self) -> usize {
+        N
+    }
+    fn sample_to_slice<R: Rng + ?Sized>(&self, rng: &mut R, output: &mut [F]) {
         match &self.repr {
-            DirichletRepr::FromGamma(dirichlet) => dirichlet.sample(rng),
-            DirichletRepr::FromBeta(dirichlet) => dirichlet.sample(rng),
+            DirichletRepr::FromGamma(dirichlet) => dirichlet.sample_to_slice(rng, output),
+            DirichletRepr::FromBeta(dirichlet) => dirichlet.sample_to_slice(rng, output),
         }
     }
+}
+
+impl<F, const N: usize> Distribution<Vec<F>> for Dirichlet<F, N>
+where
+    F: Float + Default,
+    StandardNormal: Distribution<F>,
+    Exp1: Distribution<F>,
+    Open01: Distribution<F>,
+{
+    distribution_impl!(F);
 }
 
 #[cfg(test)]
@@ -403,7 +423,7 @@ mod test {
         let alpha_sum: f64 = alpha.iter().sum();
         let expected_mean = alpha.map(|x| x / alpha_sum);
         for i in 0..N {
-            assert_almost_eq!(sample_mean[i], expected_mean[i], rtol);
+            average::assert_almost_eq!(sample_mean[i], expected_mean[i], rtol);
         }
     }
 

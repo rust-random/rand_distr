@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] — Unreleased
 - Bump to MSRV 1.85.0 and Edition 2024 in line with `rand` (#27)
 
+### Additions
+- `MultiDistribution` trait to sample more efficiently from multi-dimensional distributions (#18)
+
+### Changes
+- Moved `Dirichlet` into the new `multi` module and implement `MultiDistribution` for it (#18)
+
 ## [0.5.2]
 
 ### API Changes
