@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Additions
 - `MultiDistribution` trait to sample more efficiently from multi-dimensional distributions (#18)
+- `ConstMultiDistribution` trait as support for fixed-dimension distributions (#29)
 
 ### Changes
 - Moved `Dirichlet` into the new `multi` module and implement `MultiDistribution` for it (#18)
