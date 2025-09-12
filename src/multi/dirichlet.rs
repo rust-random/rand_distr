@@ -10,7 +10,7 @@
 //! The dirichlet distribution `Dirichlet(α₁, α₂, ..., αₙ)`.
 
 #![cfg(feature = "alloc")]
-use crate::{multi::MultiDistribution, Beta, Distribution, Exp1, Gamma, Open01, StandardNormal};
+use crate::{Beta, Distribution, Exp1, Gamma, Open01, StandardNormal, multi::MultiDistribution};
 use core::fmt;
 use num_traits::{Float, NumCast};
 use rand::Rng;
