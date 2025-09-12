@@ -318,36 +318,6 @@ where
             })
         }
     }
-
-    /// Construct a new `Dirichlet` with the given shape parameter `alpha` and `size`.
-    ///
-    /// Requires `size >= 2`.
-    #[inline]
-    pub fn new_with_size(alpha: F, size: usize) -> Result<Dirichlet<F>, Error> {
-        if !(alpha > F::zero()) {
-            return Err(Error::AlphaTooSmall);
-        }
-        if size < 2 {
-            return Err(Error::SizeTooSmall);
-        }
-        if alpha <= NumCast::from(0.1).unwrap() {
-            // Use the Beta method when alpha is less than 0.1  This
-            // threshold provides a reasonable compromise between using the faster
-            // Gamma method for as wide a range as possible while ensuring that
-            // the probability of generating nans is negligibly small.
-            let dist = DirichletFromBeta::new(&vec![alpha; size])
-                .map_err(|_| Error::FailedToCreateBeta)?;
-            Ok(Dirichlet {
-                repr: DirichletRepr::FromBeta(dist),
-            })
-        } else {
-            let dist = DirichletFromGamma::new(&vec![alpha; size])
-                .map_err(|_| Error::FailedToCreateGamma)?;
-            Ok(Dirichlet {
-                repr: DirichletRepr::FromGamma(dist),
-            })
-        }
-    }
 }
 
 impl<F> MultiDistribution<F> for Dirichlet<F>
