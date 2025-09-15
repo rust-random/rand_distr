@@ -96,11 +96,11 @@ fn choose_weighted_indexed() {
 }
 
 #[test]
-fn choose_one_weighted_indexed() {
+fn sample_one_weighted_indexed() {
     struct Adapter<F: Fn(i64) -> f64>(Vec<i64>, F);
     impl<F: Fn(i64) -> f64> Distribution<i64> for Adapter<F> {
         fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> i64 {
-            *IndexedRandom::choose_multiple_weighted(&self.0[..], rng, 1, |i| (self.1)(*i))
+            *IndexedRandom::sample_weighted(&self.0[..], rng, 1, |i| (self.1)(*i))
                 .unwrap()
                 .next()
                 .unwrap()
@@ -120,13 +120,12 @@ fn choose_one_weighted_indexed() {
 }
 
 #[test]
-fn choose_two_weighted_indexed() {
+fn sample_two_weighted_indexed() {
     struct Adapter<F: Fn(i64) -> f64>(Vec<i64>, F);
     impl<F: Fn(i64) -> f64> Distribution<i64> for Adapter<F> {
         fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> i64 {
             let mut iter =
-                IndexedRandom::choose_multiple_weighted(&self.0[..], rng, 2, |i| (self.1)(*i))
-                    .unwrap();
+                IndexedRandom::sample_weighted(&self.0[..], rng, 2, |i| (self.1)(*i)).unwrap();
             let mut a = *iter.next().unwrap();
             let mut b = *iter.next().unwrap();
             assert!(iter.next().is_none());
@@ -204,12 +203,12 @@ fn choose_stable_iterator() {
 }
 
 #[test]
-fn choose_two_iterator() {
+fn sample_two_iterator() {
     struct Adapter<I>(I);
     impl<I: Clone + Iterator<Item = i64>> Distribution<i64> for Adapter<I> {
         fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> i64 {
             let mut buf = [0; 2];
-            IteratorRandom::choose_multiple_fill(self.0.clone(), rng, &mut buf);
+            IteratorRandom::sample_fill(self.0.clone(), rng, &mut buf);
             buf.sort_unstable();
             assert!(buf[0] < 99 && buf[1] >= 1);
             let a = buf[0];
