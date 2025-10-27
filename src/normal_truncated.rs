@@ -59,8 +59,8 @@ struct NormalTruncatedOneSided {
 
 impl NormalTruncatedOneSided {
     fn new(mu: f64, sigma: f64, lower: f64) -> Self {
-        let alpha = (lower - mu) / sigma;
-        let alpha_star = (alpha + (alpha.powi(2) + 4.0).sqrt()) / 2.0;
+        let standart_lower_bound = (lower - mu) / sigma;
+        let alpha_star = (standart_lower_bound + (standart_lower_bound.powi(2) + 4.0).sqrt()) / 2.0;
         let lambda = alpha_star;
         NormalTruncatedOneSided {
             alpha_star,
@@ -78,6 +78,45 @@ impl Distribution<f64> for NormalTruncatedOneSided {
             let z = self.exp_distribution.sample(rng) + self.lower_bound;
             let u: f64 = rng.random();
             let rho = (-0.5 * (z - self.alpha_star).powi(2)).exp();
+            if u <= rho {
+                return self.mu + self.sigma * z;
+            }
+        }
+    }
+}
+
+struct NormalTruncatedTwoSided {
+    mu: f64,
+    sigma: f64,
+    // In standard normal coordinates
+    lower: f64,
+    // In standard normal coordinates
+    upper: f64,
+}
+
+impl NormalTruncatedTwoSided {
+    fn new(mu: f64, sigma: f64, lower: f64, upper: f64) -> Self {
+        NormalTruncatedTwoSided {
+            mu,
+            sigma,
+            lower: (lower - mu) / sigma,
+            upper: (upper - mu) / sigma,
+        }
+    }
+}
+
+impl Distribution<f64> for NormalTruncatedTwoSided {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> f64 {
+        loop {
+            let z = rng.random_range(self.lower..self.upper);
+            let u: f64 = rng.random();
+            let rho = if self.lower <= 0.0 && self.upper >= 0.0 {
+                (-0.5 * z.powi(2)).exp()
+            } else if self.upper < 0.0 {
+                (0.5 * (self.upper.powi(2) - z.powi(2))).exp()
+            } else {
+                (0.5 * (self.lower.powi(2) - z.powi(2))).exp()
+            };
             if u <= rho {
                 return self.mu + self.sigma * z;
             }
