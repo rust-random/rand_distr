@@ -21,7 +21,6 @@
 )]
 #![allow(clippy::neg_cmp_op_on_partial_ord)] // suggested fix too verbose
 #![no_std]
-#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 //! Generating random samples from probability distributions.
 //!
