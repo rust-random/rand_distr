@@ -1,4 +1,6 @@
 use rand::{Rng, distr::Distribution};
+#[allow(unused_imports)]
+use num_traits::Float;
 
 /// The [truncated normal distribution](https://en.wikipedia.org/wiki/Truncated_normal_distribution).
 ///
