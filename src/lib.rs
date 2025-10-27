@@ -80,6 +80,7 @@
 //! - Misc. distributions
 //!   - [`InverseGaussian`] distribution
 //!   - [`NormalInverseGaussian`] distribution
+//!   - [`TruncatedNormal`] distribution
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
@@ -112,6 +113,7 @@ pub use self::normal::{Error as NormalError, LogNormal, Normal, StandardNormal};
 pub use self::normal_inverse_gaussian::{
     Error as NormalInverseGaussianError, NormalInverseGaussian,
 };
+pub use self::normal_truncated::{Error as NormalTruncatedError, NormalTruncated};
 pub use self::pareto::{Error as ParetoError, Pareto};
 pub use self::pert::{Pert, PertBuilder, PertError};
 pub use self::poisson::{Error as PoissonError, Poisson};
