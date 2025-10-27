@@ -462,7 +462,7 @@ fn truncated_normal() {
                 let normal = statrs::distribution::Normal::new(0.0, 1.0).unwrap();
 
                 let z = normal.cdf(standard_upper) - normal.cdf(standard_lower);
-                (normal.cdf(standard_x) - normal.cdf(standard_lower)) / Z
+                (normal.cdf(standard_x) - normal.cdf(standard_lower)) / z
             }
         };
         test_continuous(seed as u64, dist, analytic);
