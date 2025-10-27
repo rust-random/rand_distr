@@ -46,56 +46,56 @@ impl NormalTruncated {
             // Threshold can probably be tuned better for performance
             if std_lower >= 0.5 {
                 // One sided truncation, lower bound only
-                return Ok(NormalTruncated(Method::OneSided(
+                Ok(NormalTruncated(Method::OneSided(
                     true,
                     NormalTruncatedOneSided::new(mean, stddev, std_lower),
-                )));
+                )))
             } else {
                 // We use naive rejection sampling
                 // Also catches the case where both bounds are infinite
-                return Ok(NormalTruncated(Method::Rejection(
+                Ok(NormalTruncated(Method::Rejection(
                     NormalTruncatedRejection {
                         normal: crate::Normal::new(mean, stddev).unwrap(),
                         lower,
                         upper,
                     },
-                )));
+                )))
             }
         } else if lower == f64::NEG_INFINITY {
             // Threshold can probably be tuned better for performance
             if std_upper <= -0.5 {
                 // One sided truncation, upper bound only
-                return Ok(NormalTruncated(Method::OneSided(
+                Ok(NormalTruncated(Method::OneSided(
                     false,
                     NormalTruncatedOneSided::new(-mean, stddev, -std_upper),
-                )));
+                )))
             } else {
                 // We use naive rejection sampling
-                return Ok(NormalTruncated(Method::Rejection(
+                Ok(NormalTruncated(Method::Rejection(
                     NormalTruncatedRejection {
                         normal: crate::Normal::new(mean, stddev).unwrap(),
                         lower,
                         upper,
                     },
-                )));
+                )))
             }
         } else {
             let diff = std_upper - std_lower;
             // Threshold can probably be tuned better for performance
             if diff >= 1.0 && std_lower <= 1.0 && std_upper >= -1.0 {
                 // Naive rejection sampling
-                return Ok(NormalTruncated(Method::Rejection(
+                Ok(NormalTruncated(Method::Rejection(
                     NormalTruncatedRejection {
                         normal: crate::Normal::new(mean, stddev).unwrap(),
                         lower,
                         upper,
                     },
-                )));
+                )))
             } else {
                 // Two sided truncation
-                return Ok(NormalTruncated(Method::TwoSided(
+                Ok(NormalTruncated(Method::TwoSided(
                     NormalTruncatedTwoSided::new(mean, stddev, std_lower, std_upper),
-                )));
+                )))
             }
         }
     }
