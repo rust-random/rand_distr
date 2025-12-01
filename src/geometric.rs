@@ -70,15 +70,16 @@ impl Geometric {
     /// Construct a new `Geometric` with the given shape parameter `p`
     /// (probability of success on each trial).
     pub fn new(p: f64) -> Result<Self, Error> {
+        let mut pi = 1.0 - p;
         if !p.is_finite() || !(0.0..=1.0).contains(&p) {
             Err(Error::InvalidProbability)
-        } else if p == 0.0 || p >= 2.0 / 3.0 {
-            Ok(Geometric { p, pi: p, k: 0 })
+        } else if pi == 1.0 || p >= 2.0 / 3.0 {
+            Ok(Geometric { p, pi, k: 0 })
         } else {
             let (pi, k) = {
                 // choose smallest k such that pi = (1 - p)^(2^k) <= 0.5
                 let mut k = 1;
-                let mut pi = (1.0 - p).powi(2);
+                pi = pi * pi;
                 while pi > 0.5 {
                     k += 1;
                     pi = pi * pi;
@@ -106,7 +107,7 @@ impl Distribution<u64> for Geometric {
             return failures;
         }
 
-        if self.p == 0.0 {
+        if self.pi == 1.0 {
             return u64::MAX;
         }
 
@@ -263,5 +264,19 @@ mod test {
     #[test]
     fn geometric_distributions_can_be_compared() {
         assert_eq!(Geometric::new(1.0), Geometric::new(1.0));
+    }
+
+    #[test]
+    fn small_p() {
+        let a = f64::EPSILON / 2.0;
+        assert!(1.0 - a < 1.0); // largest repr. value < 1
+        assert!(Geometric::new(a).is_ok());
+
+        let b = f64::EPSILON / 4.0;
+        assert!(b > 0.0);
+        assert!(1.0 - b == 1.0); // rounds to 1
+        let d = Geometric::new(b).unwrap();
+        let mut rng = crate::test::VoidRng;
+        assert_eq!(d.sample(&mut rng), u64::MAX);
     }
 }
