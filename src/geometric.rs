@@ -67,8 +67,14 @@ impl fmt::Display for Error {
 impl std::error::Error for Error {}
 
 impl Geometric {
-    /// Construct a new `Geometric` with the given shape parameter `p`
-    /// (probability of success on each trial).
+    /// Construct a new `Geometric` distribution
+    ///
+    /// The shape parameter `p` is the probability of success on each trial.
+    ///
+    /// ### Edge cases
+    ///
+    /// If `p == 0.0` or `1.0 - p` rounds to `1.0` then sampling returns
+    /// `u64::MAX`.
     pub fn new(p: f64) -> Result<Self, Error> {
         let mut pi = 1.0 - p;
         if !p.is_finite() || !(0.0..=1.0).contains(&p) {
