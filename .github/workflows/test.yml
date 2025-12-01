@@ -74,10 +74,6 @@ jobs:
             deps: sudo apt-get update ; sudo apt install gcc-multilib
             target: i686-unknown-linux-gnu
             toolchain: nightly
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            toolchain: nightly
-            variant: minimal_versions
 
     steps:
       - uses: actions/checkout@v4
@@ -90,10 +86,6 @@ jobs:
           target: ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
       - run: ${{ matrix.deps }}
-      - name: Maybe minimal versions
-        if: ${{ matrix.variant == 'minimal_versions' }}
-        run: |
-          cargo generate-lockfile -Z minimal-versions
       - name: Build rand_distr
         run: |
           cargo build --target ${{ matrix.target }} --features=serde
