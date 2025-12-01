@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Dirichlet` no longer uses `const` generics, which means that its size is not required at compile time. Essentially a revert of rand#1292. (#15)
 - Add `Dirichlet::new_with_size` constructor (#15)
 
+### Fixes
+- Fix `Geometric::new` for small `p > 0` where `1 - p` rounds to 1 (#36)
+
 ## [0.5.2]
 
 ### API Changes

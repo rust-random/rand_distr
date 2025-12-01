@@ -155,6 +155,20 @@ mod test {
     // NOTE: Some distributions have tests checking only that samples can be
     // generated. This is redundant with vector and correctness tests.
 
+    /// An RNG which panics on first use
+    pub struct VoidRng;
+    impl rand::RngCore for VoidRng {
+        fn next_u32(&mut self) -> u32 {
+            panic!("usage of VoidRng")
+        }
+        fn next_u64(&mut self) -> u64 {
+            panic!("usage of VoidRng")
+        }
+        fn fill_bytes(&mut self, _: &mut [u8]) {
+            panic!("usage of VoidRng")
+        }
+    }
+
     /// Construct a deterministic RNG with the given seed
     pub fn rng(seed: u64) -> impl rand::RngCore {
         // For tests, we want a statistically good, fast, reproducible RNG.
