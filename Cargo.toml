@@ -39,9 +39,9 @@ serde = { version = "1.0.103", features = ["derive"], optional = true }
 serde_with = { version = "3", optional = true }
 
 [dev-dependencies]
-rand_pcg = { version = "0.9.0" }
+rand_pcg = { version = "0.10.0-rc.1" }
 # For inline examples
-rand = { version = "0.10.0-rc.0", features = ["small_rng"] }
+rand = { version = "0.10.0-rc.5", features = ["small_rng"] }
 # Histogram implementation for testing uniformity
 average = { version = "0.16", features = [ "std" ] }
 # Special functions for testing distributions
