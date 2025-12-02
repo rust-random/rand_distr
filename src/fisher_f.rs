@@ -9,7 +9,7 @@
 
 //! The Fisher F-distribution.
 
-use crate::{ChiSquared, Distribution, Exp1, Open01, StandardNormal};
+use crate::{ChiSquared, Distribution, Exp1, Open01, StandardNormal, chi_squared};
 use core::fmt;
 use num_traits::Float;
 use rand::Rng;
@@ -57,9 +57,9 @@ where
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum Error {
-    /// `m <= 0` or `nan`.
+    /// `0.5 * m <= 0.0` or `nan`.
     MTooSmall,
-    /// `n <= 0` or `nan`.
+    /// `0.5 * n <= 0.0` or `nan`.
     NTooSmall,
 }
 
@@ -84,17 +84,13 @@ where
 {
     /// Create a new `FisherF` distribution, with the given parameter.
     pub fn new(m: F, n: F) -> Result<FisherF<F>, Error> {
-        let zero = F::zero();
-        if !(m > zero) {
-            return Err(Error::MTooSmall);
-        }
-        if !(n > zero) {
-            return Err(Error::NTooSmall);
-        }
-
         Ok(FisherF {
-            numer: ChiSquared::new(m).unwrap(),
-            denom: ChiSquared::new(n).unwrap(),
+            numer: ChiSquared::new(m).map_err(|x| match x {
+                chi_squared::Error::DoFTooSmall => Error::MTooSmall,
+            })?,
+            denom: ChiSquared::new(n).map_err(|x| match x {
+                chi_squared::Error::DoFTooSmall => Error::NTooSmall,
+            })?,
             dof_ratio: n / m,
         })
     }
