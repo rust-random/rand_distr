@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixes
 - Fix `Geometric::new` for small `p > 0` where `1 - p` rounds to 1 (#36)
+- Fix panic in `FisherF::new` on almost zero parameters (#39)
 
 ## [0.5.2]
 
