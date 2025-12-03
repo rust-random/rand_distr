@@ -66,17 +66,20 @@ where
 /// Error type returned from [`Zipf::new`].
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Error {
-    /// `s < 0` or `nan`.
+    /// `s < 0` or `s` is `nan`
     STooSmall,
-    /// `n < 1`.
+    /// `n < 1` or `n` is `nan`
     NTooSmall,
+    /// `n = inf` and `s <= 1`
+    IllDefined,
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
             Error::STooSmall => "s < 0 or is NaN in Zipf distribution",
-            Error::NTooSmall => "n < 1 in Zipf distribution",
+            Error::NTooSmall => "n < 1 or is NaN in Zipf distribution",
+            Error::IllDefined => "n = inf and s <= 1 in Zipf distribution",
         })
     }
 }
@@ -100,8 +103,11 @@ where
         if !(s >= F::zero()) {
             return Err(Error::STooSmall);
         }
-        if n < F::one() {
+        if !(n >= F::one()) {
             return Err(Error::NTooSmall);
+        }
+        if n.is_infinite() && s <= F::one() {
+            return Err(Error::IllDefined);
         }
         let q = if s != F::one() {
             // Make sure to calculate the division only once.
@@ -110,7 +116,9 @@ where
             // This value is never used.
             F::zero()
         };
-        let t = if s != F::one() {
+        let t = if s == F::infinity() {
+            F::one()
+        } else if s != F::one() {
             (n.powf(F::one() - s) - s) * q
         } else {
             F::one() + n.ln()
@@ -218,6 +226,16 @@ mod tests {
             assert!(r >= 1.);
         }
         // TODO: verify that this is a uniform distribution
+    }
+
+    #[test]
+    fn zipf_sample_s_inf() {
+        let d = Zipf::new(10., f64::infinity()).unwrap();
+        let mut rng = crate::test::rng(2);
+        for _ in 0..1000 {
+            let r = d.sample(&mut rng);
+            assert!(r == 1.);
+        }
     }
 
     #[test]
