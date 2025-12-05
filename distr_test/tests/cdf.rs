@@ -437,6 +437,38 @@ fn poisson() {
     }
 }
 
+#[test]
+fn truncated_normal() {
+    let parameters = [
+        (0.0, 1.0, -1.0, 1.0),
+        (0.0, 1.0, 0.0, 2.0),
+        (1.0, 2.0, -1.0, 3.0),
+        (5.0, 0.5, 4.0, 6.0),
+        (10.0, 1.0, 8.0, 12.0),
+    ];
+
+    for (seed, (mu, sigma, lower, upper)) in parameters.into_iter().enumerate() {
+        let dist = rand_distr::NormalTruncated::new(mu, sigma, lower, upper).unwrap();
+        let analytic = |x| {
+            if x < lower {
+                0.0
+            } else if x > upper {
+                1.0
+            } else {
+                let standard_lower = (lower - mu) / sigma;
+                let standard_upper = (upper - mu) / sigma;
+                let standard_x = (x - mu) / sigma;
+
+                let normal = statrs::distribution::Normal::new(0.0, 1.0).unwrap();
+
+                let z = normal.cdf(standard_upper) - normal.cdf(standard_lower);
+                (normal.cdf(standard_x) - normal.cdf(standard_lower)) / z
+            }
+        };
+        test_continuous(seed as u64, dist, analytic);
+    }
+}
+
 fn ln_factorial(n: u64) -> f64 {
     (n as f64 + 1.0).lgamma().0
 }
