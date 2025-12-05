@@ -44,7 +44,7 @@ can be enabled. (Note that any other crate depending on `num-traits` with the
 
 
 [statrs]: https://github.com/statrs-dev/statrs
-[rand::distr]: https://rust-random.github.io/rand/rand/distr/index.html
+[rand::distr]: https://docs.rs/rand/latest/rand/distr/index.html
 
 ## Old Issues and Pull Requests
 
