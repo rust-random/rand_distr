@@ -1,0 +1,23 @@
+[package]
+name = "rand_distr-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+arbitrary = { version = "1.4", features = ["derive"] }
+rand = { version = "0.10.0", default-features = false, features = [] }
+
+[dependencies.rand_distr]
+path = ".."
+
+[[bin]]
+name = "parameter"
+path = "fuzz_targets/parameter.rs"
+test = false
+doc = false
+bench = false
