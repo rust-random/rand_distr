@@ -133,14 +133,16 @@ where
 /// Error type returned from [`Exp::new`].
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Error {
-    /// `lambda < 0` or `nan`.
+    /// `lambda < 0` or is `-0.0` is `nan`.
     LambdaTooSmall,
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
-            Error::LambdaTooSmall => "lambda is negative or NaN in exponential distribution",
+            Error::LambdaTooSmall => {
+                "lambda is negative (including -0.0) or NaN in exponential distribution"
+            }
         })
     }
 }
@@ -162,9 +164,13 @@ where
     /// the case `lambda = 0` is handled as follows: each sample corresponds
     /// to a sample from an `Exp1` multiplied by `1 / 0`. Primitive types
     /// yield infinity, since `1 / 0 = infinity`.
+    ///
+    /// The case `lambda = N::neg_zero()` returns an error, because `-0.0` is typically
+    /// produced through underflow of computations with a negative ideal result, and
+    /// because `1 / -0.0 = -infinity`.
     #[inline]
     pub fn new(lambda: F) -> Result<Exp<F>, Error> {
-        if !(lambda >= F::zero()) {
+        if lambda.is_sign_negative() || lambda.is_nan() {
             return Err(Error::LambdaTooSmall);
         }
         Ok(Exp {
