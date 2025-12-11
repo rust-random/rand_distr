@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix hang and debug assertion in `Zipf::new` on invalid parameters ([#41])
 - Fix panic in `Binomial::sample` with `n ≥ 2^63`; this is a Value-breaking change ([#43])
 - Error instead of producing `-inf` output for `Exp` when `lambda` is `-0.0` ([#44])
+- Avoid returning NaN from `Gamma::sample`; this is a Value-breaking change and also affects `ChiSquared` and `Dirichlet` ([#46])
 
 ## [0.5.2]
 
@@ -157,6 +158,7 @@ Initial release. This is equivalent to the code in `rand` 0.6.5.
 [#41]: https://github.com/rust-random/rand_distr/pull/41
 [#43]: https://github.com/rust-random/rand_distr/pull/43
 [#44]: https://github.com/rust-random/rand_distr/pull/44
+[#46]: https://github.com/rust-random/rand_distr/pull/46
 [rand#840]: https://github.com/rust-random/rand/pull/840
 [rand#847]: https://github.com/rust-random/rand/pull/847
 [rand#891]: https://github.com/rust-random/rand/pull/891
