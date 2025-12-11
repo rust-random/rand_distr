@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix panic in `FisherF::new` on almost zero parameters (#39)
 - Fix panic in `NormalInverseGaussian::new` with very large `alpha`; this is a Value-breaking change (#40)
 - Error instead of producing `-inf` output for `Exp` when `lambda` is `-0.0` (#44)
+- Avoid returning NaN from `Gamma::sample`; this is a Value-breaking change and also affects `ChiSquared` and `Dirichlet` (#46)
 
 ## [0.5.2]
 
