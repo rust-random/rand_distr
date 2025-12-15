@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use `direct-minimal-versions` (#38)
 - Fix panic in `FisherF::new` on almost zero parameters (#39)
 - Fix panic in `NormalInverseGaussian::new` with very large `alpha`; this is a Value-breaking change (#40)
+- Fix panic in `Binomial::sample` with `n ≥ 2^63`; this is a Value-breaking change (#43)
 - Error instead of producing `-inf` output for `Exp` when `lambda` is `-0.0` (#44)
 
 ## [0.5.2]
