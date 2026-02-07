@@ -13,7 +13,7 @@ use crate::utils::ziggurat;
 use crate::{Distribution, ziggurat_tables};
 use core::fmt;
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The standard exponential distribution `Exp(1)`.
 ///

@@ -10,7 +10,7 @@
 use crate::{Distribution, StandardUniform};
 use core::fmt;
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The [triangular distribution](https://en.wikipedia.org/wiki/Triangular_distribution) `Triangular(min, max, mode)`.
 ///
@@ -114,7 +114,6 @@ where
 mod test {
     use super::*;
     use crate::utils::ConstRng;
-    use rand::Rng;
 
     #[test]
     fn test_triangular() {

@@ -11,7 +11,7 @@
 use crate::{Distribution, StandardUniform};
 use core::fmt;
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The Zipf (Zipfian) distribution `Zipf(n, s)`.
 ///

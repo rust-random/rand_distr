@@ -116,6 +116,7 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+    use rand::RngExt;
 
     fn median(numbers: &mut [f64]) -> f64 {
         sort(numbers);

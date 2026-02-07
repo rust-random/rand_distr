@@ -12,7 +12,7 @@
 use crate::{Distribution, Exp1, Normal, StandardNormal, StandardUniform};
 use core::fmt;
 use num_traits::{Float, FloatConst};
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The [Poisson distribution](https://en.wikipedia.org/wiki/Poisson_distribution) `Poisson(λ)`.
 ///

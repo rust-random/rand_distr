@@ -1,7 +1,7 @@
 use crate::{Distribution, InverseGaussian, InverseGaussianError, StandardNormal, StandardUniform};
 use core::fmt;
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// Error type returned from [`NormalInverseGaussian::new`]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -6,7 +6,7 @@ publish = false
 
 [dev-dependencies]
 rand_distr = { path = "..", default-features = false, features = ["alloc"] }
-rand = { version = "0.10.0-rc.0", features = ["small_rng"] }
+rand = { version = "0.10.0-rc.9", features = [] }
 num-traits = "0.2.19"
 # Special functions for testing distributions
 special = "0.11.0"
