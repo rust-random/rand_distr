@@ -156,20 +156,21 @@ mod test {
 
     /// An RNG which panics on first use
     pub struct VoidRng;
-    impl rand::RngCore for VoidRng {
-        fn next_u32(&mut self) -> u32 {
+    impl rand::TryRng for VoidRng {
+        type Error = rand::rand_core::Infallible;
+        fn try_next_u32(&mut self) -> Result<u32, Self::Error> {
             panic!("usage of VoidRng")
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> Result<u64, Self::Error> {
             panic!("usage of VoidRng")
         }
-        fn fill_bytes(&mut self, _: &mut [u8]) {
+        fn try_fill_bytes(&mut self, _: &mut [u8]) -> Result<(), Self::Error> {
             panic!("usage of VoidRng")
         }
     }
 
     /// Construct a deterministic RNG with the given seed
-    pub fn rng(seed: u64) -> impl rand::RngCore {
+    pub fn rng(seed: u64) -> impl rand::RngExt {
         // For tests, we want a statistically good, fast, reproducible RNG.
         // PCG32 will do fine, and will be easy to embed if we ever need to.
         const INC: u64 = 11634580027462260723;

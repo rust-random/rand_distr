@@ -12,7 +12,7 @@
 use crate::{ChiSquared, ChiSquaredError};
 use crate::{Distribution, Exp1, Open01, StandardNormal};
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 

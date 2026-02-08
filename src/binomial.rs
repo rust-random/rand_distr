@@ -14,7 +14,7 @@ use core::cmp::Ordering;
 use core::fmt;
 #[allow(unused_imports)]
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The [binomial distribution](https://en.wikipedia.org/wiki/Binomial_distribution) `Binomial(n, p)`.
 ///
@@ -393,9 +393,7 @@ impl Distribution<u64> for Binomial {
 
 #[cfg(test)]
 mod test {
-    use super::Binomial;
-    use crate::Distribution;
-    use rand::Rng;
+    use super::*;
 
     fn test_binomial_mean_and_variance<R: Rng>(n: u64, p: f64, rng: &mut R) {
         let binomial = Binomial::new(n, p).unwrap();

@@ -14,7 +14,7 @@ use self::GammaRepr::*;
 use crate::{Distribution, Exp, Exp1, Open01, StandardNormal};
 use core::fmt;
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 

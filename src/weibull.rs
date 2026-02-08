@@ -11,7 +11,7 @@
 use crate::{Distribution, OpenClosed01};
 use core::fmt;
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The [Weibull distribution](https://en.wikipedia.org/wiki/Weibull_distribution) `Weibull(λ, k)`.
 ///

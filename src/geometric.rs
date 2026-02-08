@@ -4,7 +4,7 @@ use crate::Distribution;
 use core::fmt;
 #[allow(unused_imports)]
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The [geometric distribution](https://en.wikipedia.org/wiki/Geometric_distribution) `Geometric(p)`.
 ///

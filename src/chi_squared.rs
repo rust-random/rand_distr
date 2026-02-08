@@ -14,7 +14,7 @@ use self::ChiSquaredRepr::*;
 use crate::{Distribution, Exp1, Gamma, Open01, StandardNormal};
 use core::fmt;
 use num_traits::Float;
-use rand::Rng;
+use rand::{Rng, RngExt};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 

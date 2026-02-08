@@ -107,6 +107,7 @@ where
 mod tests {
     use super::*;
     use core::fmt::{Debug, Display, LowerExp};
+    use rand::RngExt;
 
     #[test]
     #[should_panic]
