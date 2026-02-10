@@ -5,16 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.6.0] — Unreleased
-- Bump to MSRV 1.85.0 and Edition 2024 in line with `rand` ([#27])
+- Bump to MSRV 1.85.0 and Edition 2024 in line with `rand` ([#28])
+- Update `rand` to version 0.10.0 ([#31], [#48])
 
 ### Additions
 - `MultiDistribution` trait to sample more efficiently from multi-dimensional distributions ([#18])
+- Add `WeightedAliasIndex::weights()` to reconstruct the original weights in O(n) ([#25])
 - `ConstMultiDistribution` trait as support for fixed-dimension distributions ([#29])
 
 ### Changes
 - Moved `Dirichlet` into the new `multi` module and implement `MultiDistribution` for it ([#18])
-- `Dirichlet` no longer uses `const` generics, which means that its size is not required at compile time. Essentially a revert of rand#1292. ([#15])
-- Add `Dirichlet::new_with_size` constructor ([#15])
+- `Dirichlet` no longer uses `const` generics, which means that its size is not required at compile time. Essentially a revert of [rand#1292]. ([#30])
 
 ### Fixes
 - Fix `Geometric::new` for small `p > 0` where `1 - p` rounds to 1 ([#36])
@@ -25,14 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix panic in `Binomial::sample` with `n ≥ 2^63`; this is a Value-breaking change ([#43])
 - Error instead of producing `-inf` output for `Exp` when `lambda` is `-0.0` ([#44])
 - Avoid returning NaN from `Gamma::sample`; this is a Value-breaking change and also affects `ChiSquared` and `Dirichlet` ([#46])
-
-## [0.5.2]
-
-### API Changes
-- Add `WeightedAliasIndex::weights()` to reconstruct the original weights in O(n)
-
-### Testing
-- Added a test for `WeightedAliasIndex::weights()`
 
 ## [0.5.1]
 
@@ -149,8 +142,11 @@ Initial release. This is equivalent to the code in `rand` 0.6.5.
 
 [#15]: https://github.com/rust-random/rand_distr/pull/15
 [#18]: https://github.com/rust-random/rand_distr/pull/18
-[#27]: https://github.com/rust-random/rand_distr/pull/27
+[#25]: https://github.com/rust-random/rand_distr/pull/25
+[#28]: https://github.com/rust-random/rand_distr/pull/28
 [#29]: https://github.com/rust-random/rand_distr/pull/29
+[#30]: https://github.com/rust-random/rand_distr/pull/30
+[#31]: https://github.com/rust-random/rand_distr/pull/31
 [#36]: https://github.com/rust-random/rand_distr/pull/36
 [#38]: https://github.com/rust-random/rand_distr/pull/38
 [#39]: https://github.com/rust-random/rand_distr/pull/39
@@ -159,6 +155,7 @@ Initial release. This is equivalent to the code in `rand` 0.6.5.
 [#43]: https://github.com/rust-random/rand_distr/pull/43
 [#44]: https://github.com/rust-random/rand_distr/pull/44
 [#46]: https://github.com/rust-random/rand_distr/pull/46
+[#48]: https://github.com/rust-random/rand_distr/pull/48
 [rand#840]: https://github.com/rust-random/rand/pull/840
 [rand#847]: https://github.com/rust-random/rand/pull/847
 [rand#891]: https://github.com/rust-random/rand/pull/891
