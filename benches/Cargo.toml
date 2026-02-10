@@ -7,8 +7,8 @@ publish = false
 [dependencies]
 
 [dev-dependencies]
-rand = { version = "0.10.0-rc.9", features = [] }
-rand_pcg = "0.10.0-rc.9"
+rand = { version = "0.10.0", features = [] }
+rand_pcg = "0.10.0"
 rand_distr = { path = ".." }
 criterion = "0.5"
 criterion-cycles-per-byte = "0.6"
