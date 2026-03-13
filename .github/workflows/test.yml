@@ -81,9 +81,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: MSRV
-        if: ${{ matrix.variant == 'MSRV' }}
-        run: cp Cargo.lock.msrv Cargo.lock
+      - name: Not MSRV
+        if: ${{ matrix.variant != 'MSRV' }}
+        run: cargo generate-lockfile --ignore-rust-version
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@master
         with:
@@ -93,7 +93,7 @@ jobs:
       - name: Maybe minimal versions
         if: ${{ matrix.variant == 'minimal_versions' }}
         run: |
-          cargo generate-lockfile -Z minimal-versions
+          cargo generate-lockfile -Z direct-minimal-versions
       - name: Build rand_distr
         run: |
           cargo build --target ${{ matrix.target }} --features=serde

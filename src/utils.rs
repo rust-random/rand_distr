@@ -11,23 +11,25 @@
 use crate::ziggurat_tables;
 #[allow(unused_imports)]
 use num_traits::Float; // Used for `no_std` to get `f64::abs()` working before `rustc 1.84`
-use rand::Rng;
 use rand::distr::hidden_export::IntoFloat;
+use rand::{Rng, RngExt};
 
 /// An RNG yielding a constant value
 #[cfg(test)]
 pub(crate) struct ConstRng(pub(crate) u64);
 #[cfg(test)]
-impl rand::RngCore for ConstRng {
-    fn next_u32(&mut self) -> u32 {
-        self.next_u64() as u32
+impl rand::TryRng for ConstRng {
+    type Error = rand::rand_core::Infallible;
+
+    fn try_next_u32(&mut self) -> Result<u32, Self::Error> {
+        Ok(self.next_u64() as u32)
     }
 
-    fn next_u64(&mut self) -> u64 {
-        self.0
+    fn try_next_u64(&mut self) -> Result<u64, Self::Error> {
+        Ok(self.0)
     }
 
-    fn fill_bytes(&mut self, _: &mut [u8]) {
+    fn try_fill_bytes(&mut self, _: &mut [u8]) -> Result<(), Self::Error> {
         unimplemented!()
     }
 }

@@ -8,8 +8,7 @@
 
 #![doc(
     html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk.png",
-    html_favicon_url = "https://www.rust-lang.org/favicon.ico",
-    html_root_url = "https://rust-random.github.io/rand/"
+    html_favicon_url = "https://www.rust-lang.org/favicon.ico"
 )]
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
@@ -21,7 +20,6 @@
 )]
 #![allow(clippy::neg_cmp_op_on_partial_ord)] // suggested fix too verbose
 #![no_std]
-#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 //! Generating random samples from probability distributions.
 //!
@@ -158,8 +156,23 @@ mod test {
     // NOTE: Some distributions have tests checking only that samples can be
     // generated. This is redundant with vector and correctness tests.
 
+    /// An RNG which panics on first use
+    pub struct VoidRng;
+    impl rand::TryRng for VoidRng {
+        type Error = rand::rand_core::Infallible;
+        fn try_next_u32(&mut self) -> Result<u32, Self::Error> {
+            panic!("usage of VoidRng")
+        }
+        fn try_next_u64(&mut self) -> Result<u64, Self::Error> {
+            panic!("usage of VoidRng")
+        }
+        fn try_fill_bytes(&mut self, _: &mut [u8]) -> Result<(), Self::Error> {
+            panic!("usage of VoidRng")
+        }
+    }
+
     /// Construct a deterministic RNG with the given seed
-    pub fn rng(seed: u64) -> impl rand::RngCore {
+    pub fn rng(seed: u64) -> impl rand::RngExt {
         // For tests, we want a statistically good, fast, reproducible RNG.
         // PCG32 will do fine, and will be easy to embed if we ever need to.
         const INC: u64 = 11634580027462260723;
