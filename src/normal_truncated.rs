@@ -16,6 +16,7 @@ pub struct NormalTruncated(Method);
 enum Method {
     Rejection(NormalTruncatedRejection),
     OneSided(bool, NormalTruncatedOneSided), // bool indicates if lower bound is used
+    TailInterval(bool, NormalTruncatedTailInterval), // bool indicates mirrored upper-tail proposal
     TwoSided(NormalTruncatedTwoSided),
 }
 
@@ -43,8 +44,8 @@ impl NormalTruncated {
         let std_upper = (upper - mean) / stddev;
 
         if upper == f64::INFINITY {
-            // Threshold can probably be tuned better for performance
-            if std_lower >= 0.5 {
+            // This threshold depends on how fast normal vs exponential sampling is. This value was found empirically, but it can probably be tuned better.
+            if std_lower > 0.3 {
                 // One sided truncation, lower bound only
                 Ok(NormalTruncated(Method::OneSided(
                     true,
@@ -62,8 +63,8 @@ impl NormalTruncated {
                 )))
             }
         } else if lower == f64::NEG_INFINITY {
-            // Threshold can probably be tuned better for performance
-            if std_upper <= -0.5 {
+            // This threshold depends on how fast normal vs exponential sampling is. This value was found empirically, but it can probably be tuned better.
+            if std_upper < -0.3 {
                 // One sided truncation, upper bound only
                 Ok(NormalTruncated(Method::OneSided(
                     false,
@@ -79,10 +80,10 @@ impl NormalTruncated {
                     },
                 )))
             }
-        } else {
+        } else { // Two sided truncation
             let diff = std_upper - std_lower;
             // Threshold can probably be tuned better for performance
-            if diff >= 1.0 && std_lower <= 1.0 && std_upper >= -1.0 {
+            if diff >= 1.0 && std_lower <= 0.3 && std_upper >= -0.3 {
                 // Naive rejection sampling
                 Ok(NormalTruncated(Method::Rejection(
                     NormalTruncatedRejection {
@@ -90,6 +91,25 @@ impl NormalTruncated {
                         lower,
                         upper,
                     },
+                )))
+            } else if std_lower >= 0.5 && diff >= 1.0 {
+                // Two sided truncation in the upper tail.
+                // Use the one-sided sampler as a proposal and reject past the upper bound.
+                Ok(NormalTruncated(Method::TailInterval(
+                    false,
+                    NormalTruncatedTailInterval::new(
+                        NormalTruncatedOneSided::new(mean, stddev, std_lower),
+                        upper,
+                    ),
+                )))
+            } else if std_upper <= -0.5 && diff >= 1.0 {
+                // Mirror the lower-tail case to reuse the same one-sided sampler.
+                Ok(NormalTruncated(Method::TailInterval(
+                    true,
+                    NormalTruncatedTailInterval::new(
+                        NormalTruncatedOneSided::new(-mean, stddev, -std_upper),
+                        -lower,
+                    ),
                 )))
             } else {
                 // Two sided truncation
@@ -107,6 +127,8 @@ impl Distribution<f64> for NormalTruncated {
             Method::Rejection(rej) => rej.sample(rng),
             Method::OneSided(true, one_sided) => one_sided.sample(rng),
             Method::OneSided(false, one_sided) => -one_sided.sample(rng),
+            Method::TailInterval(false, tail_interval) => tail_interval.sample(rng),
+            Method::TailInterval(true, tail_interval) => -tail_interval.sample(rng),
             Method::TwoSided(two_sided) => two_sided.sample(rng),
         }
     }
@@ -171,6 +193,32 @@ impl Distribution<f64> for NormalTruncatedOneSided {
 }
 
 #[derive(Debug)]
+struct NormalTruncatedTailInterval {
+    proposal: NormalTruncatedOneSided,
+    upper_bound: f64,
+}
+
+impl NormalTruncatedTailInterval {
+    fn new(proposal: NormalTruncatedOneSided, upper_bound: f64) -> Self {
+        NormalTruncatedTailInterval {
+            proposal,
+            upper_bound,
+        }
+    }
+}
+
+impl Distribution<f64> for NormalTruncatedTailInterval {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> f64 {
+        loop {
+            let sample = self.proposal.sample(rng);
+            if sample <= self.upper_bound {
+                return sample;
+            }
+        }
+    }
+}
+
+#[derive(Debug)]
 struct NormalTruncatedTwoSided {
     mu: f64,
     sigma: f64,
@@ -207,5 +255,28 @@ impl Distribution<f64> for NormalTruncatedTwoSided {
                 return self.mu + self.sigma * z;
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn uses_tail_interval_method_for_positive_tail() {
+        let distr = NormalTruncated::new(0.0, 1.0, 2.0, 3.0).unwrap();
+        assert!(matches!(distr.0, Method::TailInterval(false, _)));
+    }
+
+    #[test]
+    fn uses_tail_interval_method_for_negative_tail() {
+        let distr = NormalTruncated::new(0.0, 1.0, -3.0, -2.0).unwrap();
+        assert!(matches!(distr.0, Method::TailInterval(true, _)));
+    }
+
+    #[test]
+    fn keeps_uniform_two_sided_method_for_narrow_positive_interval() {
+        let distr = NormalTruncated::new(0.0, 1.0, 0.1, 0.2).unwrap();
+        assert!(matches!(distr.0, Method::TwoSided(_)));
     }
 }

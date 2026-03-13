@@ -106,8 +106,11 @@ where
 
 /// Tests a distribution against an analytical CDF.
 /// The CDF has to be continuous.
-pub fn test_continuous(seed: u64, dist: impl Distribution<f64>, cdf: impl Fn(f64) -> f64) {
+pub fn test_continuous(seed: u64, dist: impl Distribution<f64> + std::fmt::Debug, cdf: impl Fn(f64) -> f64) {
+    let time = std::time::Instant::now();
+    println!("Testing distribution: {:?}", &dist);
     let ecdf = sample_ecdf(seed, dist);
+    println!("Sampling took {} seconds", time.elapsed().as_secs_f64());
     let ks_statistic = kolmogorov_smirnov_statistic_continuous(ecdf, cdf);
 
     let critical_value = critical_value();
@@ -122,10 +125,13 @@ pub fn test_continuous(seed: u64, dist: impl Distribution<f64>, cdf: impl Fn(f64
 pub fn test_discrete<I, D, F>(seed: u64, dist: D, cdf: F)
 where
     I: AsPrimitive<f64>,
-    D: Distribution<I>,
+    D: Distribution<I> + std::fmt::Debug,
     F: Fn(i64) -> f64,
 {
+    let time = std::time::Instant::now();
+    println!("Testing distribution: {:?}", &dist);
     let ecdf = sample_ecdf(seed, dist);
+    println!("Sampling took {} seconds", time.elapsed().as_secs_f64());
     let ks_statistic = kolmogorov_smirnov_statistic_discrete(ecdf, cdf);
 
     // This critical value is bigger than it could be for discrete distributions, but because of large sample sizes this should not matter too much

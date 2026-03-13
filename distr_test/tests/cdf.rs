@@ -440,15 +440,32 @@ fn poisson() {
 #[test]
 fn truncated_normal() {
     let parameters = [
+        // Rejection sampling: interval spans the mean with diff >= 1 stddev
         (0.0, 1.0, -1.0, 1.0),
         (0.0, 1.0, 0.0, 2.0),
         (1.0, 2.0, -1.0, 3.0),
         (5.0, 0.5, 4.0, 6.0),
         (10.0, 1.0, 8.0, 12.0),
+        // OneSided (lower bound only): upper = +inf, std_lower > 0.3
+        (0.0, 1.0, 1.0, f64::INFINITY),
+        (2.0, 0.5, 3.0, f64::INFINITY),
+        // OneSided (upper bound only): lower = -inf, std_upper < -0.3
+        (0.0, 1.0, f64::NEG_INFINITY, -1.0),
+        (2.0, 0.5, f64::NEG_INFINITY, 1.0),
+        // TailInterval (lower tail): std_lower >= 0.5, diff >= 1.0, two-sided
+        (0.0, 1.0, 1.0, 3.0),
+        (5.0, 1.0, 6.0, 8.0),
+        // TailInterval (upper tail): std_upper <= -0.5, diff >= 1.0, two-sided
+        (0.0, 1.0, -3.0, -1.0),
+        (5.0, 1.0, 2.0, 4.0),
+        // TwoSided: narrow interval not matching any other conditions
+        (0.0, 1.0, 0.1, 0.9),
+        (0.0, 1.0, 0.35, 1.5),
     ];
 
     for (seed, (mu, sigma, lower, upper)) in parameters.into_iter().enumerate() {
         let dist = rand_distr::NormalTruncated::new(mu, sigma, lower, upper).unwrap();
+        dbg!(&dist);
         let analytic = |x| {
             if x < lower {
                 0.0
