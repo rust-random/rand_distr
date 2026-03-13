@@ -125,11 +125,10 @@ pub fn test_continuous(seed: u64, dist: impl Distribution<f64> + std::fmt::Debug
 pub fn test_discrete<I, D, F>(seed: u64, dist: D, cdf: F)
 where
     I: AsPrimitive<f64>,
-    D: Distribution<I> + std::fmt::Debug,
+    D: Distribution<I>,
     F: Fn(i64) -> f64,
 {
     let time = std::time::Instant::now();
-    println!("Testing distribution: {:?}", &dist);
     let ecdf = sample_ecdf(seed, dist);
     println!("Sampling took {} seconds", time.elapsed().as_secs_f64());
     let ks_statistic = kolmogorov_smirnov_statistic_discrete(ecdf, cdf);

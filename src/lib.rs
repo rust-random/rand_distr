@@ -78,7 +78,7 @@
 //! - Misc. distributions
 //!   - [`InverseGaussian`] distribution
 //!   - [`NormalInverseGaussian`] distribution
-//!   - [`TruncatedNormal`] distribution
+//!   - [`NormalTruncated`] distribution
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
