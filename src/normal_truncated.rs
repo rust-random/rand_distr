@@ -80,7 +80,8 @@ impl NormalTruncated {
                     },
                 )))
             }
-        } else { // Two sided truncation
+        } else {
+            // Two sided truncation
             let diff = std_upper - std_lower;
             // Threshold can probably be tuned better for performance
             if diff >= 1.0 && std_lower <= 0.3 && std_upper >= -0.3 {
