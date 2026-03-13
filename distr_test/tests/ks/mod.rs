@@ -106,7 +106,11 @@ where
 
 /// Tests a distribution against an analytical CDF.
 /// The CDF has to be continuous.
-pub fn test_continuous(seed: u64, dist: impl Distribution<f64> + std::fmt::Debug, cdf: impl Fn(f64) -> f64) {
+pub fn test_continuous(
+    seed: u64,
+    dist: impl Distribution<f64> + std::fmt::Debug,
+    cdf: impl Fn(f64) -> f64,
+) {
     let time = std::time::Instant::now();
     println!("Testing distribution: {:?}", &dist);
     let ecdf = sample_ecdf(seed, dist);
