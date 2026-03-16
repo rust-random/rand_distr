@@ -56,7 +56,7 @@ where
     StandardUniform: Distribution<F>,
 {
     mean: F,
-    shape: F,
+    unscaled_sqrt_shape: F,
 }
 
 impl<F> InverseGaussian<F>
@@ -77,7 +77,11 @@ where
             return Err(Error::ShapeNegativeOrNull);
         }
 
-        Ok(Self { mean, shape })
+        let unscaled_sqrt_shape = (mean / shape).sqrt();
+        Ok(Self {
+            mean,
+            unscaled_sqrt_shape,
+        })
     }
 }
 
@@ -93,21 +97,20 @@ where
         R: Rng + ?Sized,
     {
         let mu = self.mean;
-        let l = self.shape;
 
         let v: F = rng.sample(StandardNormal);
-        let y = mu * v * v;
 
-        let mu_2l = mu / (F::from(2.).unwrap() * l);
-
-        let x = mu + mu_2l * (y - (F::from(4.).unwrap() * l * y + y * y).sqrt());
+        // This formula is algebraically equivalent to the sampling algorithm
+        // on Wikipedia, and avoids subtracting similar-sized quantities
+        let w = (F::from(0.5).unwrap() * v.abs()) * self.unscaled_sqrt_shape;
+        let z = (w + (w * w + F::one()).sqrt()).powi(2);
+        let x = mu / z;
 
         let u: F = rng.random();
 
         if u <= mu / (mu + x) {
             return x;
         }
-
         mu * mu / x
     }
 }
