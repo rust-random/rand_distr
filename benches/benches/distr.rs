@@ -106,6 +106,10 @@ fn bench(c: &mut Criterion<CyclesPerByte>) {
     distr_float!(g, "cauchy", f64, Cauchy::new(4.2, 6.9).unwrap());
     g.finish();
 
+    let mut g = c.benchmark_group("inverse_gaussian");
+    distr_float!(g, "inverse_gaussian", f64, InverseGaussian::new(1.1, 0.9).unwrap());
+    g.finish();
+
     let mut g = c.benchmark_group("triangular");
     distr_float!(g, "triangular", f64, Triangular::new(0., 1., 0.9).unwrap());
     g.finish();
