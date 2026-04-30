@@ -161,7 +161,9 @@ where
         }
 
         // Use the Knuth method only for low expected values
-        let method = if lambda < F::from(12.0).unwrap() {
+        // Per Ahrens-Dieter, the rejection sampling algorithm is
+        // only designed for values >= 10
+        let method = if lambda < F::from(10.0).unwrap() {
             Method::Knuth(KnuthMethod::new(lambda))
         } else {
             if lambda > F::from(Self::MAX_LAMBDA).unwrap() {
