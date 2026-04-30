@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Testing
 - Added a parameter fuzzing script to search for panics and invalid output ([#53])
 
+### Changes
+- Changed threshold for Ahrens-Dieter PD algorithm to >=10, matching the suggested value in the original 1982 paper
+
 ## [0.6.0] — 2026-02-10
 - Bump to MSRV 1.85.0 and Edition 2024 in line with `rand` ([#28])
 - Update `rand` to version 0.10.0 ([#31], [#48])
