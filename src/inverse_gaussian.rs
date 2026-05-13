@@ -77,7 +77,7 @@ where
             return Err(Error::ShapeNegativeOrNull);
         }
 
-        let unscaled_sqrt_shape = (mean / shape).sqrt();
+        let unscaled_sqrt_shape = (mean / shape).sqrt().min(F::infinity());
         Ok(Self {
             mean,
             unscaled_sqrt_shape,
@@ -103,12 +103,15 @@ where
         // This formula is algebraically equivalent to the sampling algorithm
         // on Wikipedia, and avoids subtracting similar-sized quantities
         let w = (F::from(0.5).unwrap() * v.abs()) * self.unscaled_sqrt_shape;
+        // Avoid NaN when v=0 and unscaled_sqrt_shape=inf
+        let w = w.min(F::infinity());
         let z = (w + (w * w + F::one()).sqrt()).powi(2);
 
         let u: F = rng.random();
 
         if (z + F::one()) * u <= z {
-            return mu / z;
+            // mu/z can be NaN only if mu=inf, in which case output inf
+            return (mu / z).min(F::infinity());
         }
         mu * z
     }
