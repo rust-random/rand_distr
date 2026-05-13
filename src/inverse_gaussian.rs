@@ -104,14 +104,13 @@ where
         // on Wikipedia, and avoids subtracting similar-sized quantities
         let w = (F::from(0.5).unwrap() * v.abs()) * self.unscaled_sqrt_shape;
         let z = (w + (w * w + F::one()).sqrt()).powi(2);
-        let x = mu / z;
 
         let u: F = rng.random();
 
-        if u <= mu / (mu + x) {
-            return x;
+        if (z + F::one()) * u <= z {
+            return mu / z;
         }
-        mu * mu / x
+        mu * z
     }
 }
 
