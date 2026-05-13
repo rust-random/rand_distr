@@ -61,6 +61,7 @@ where
     s: F,
     t: F,
     q: F,
+    n_floor: F,
 }
 
 /// Error type returned from [`Zipf::new`].
@@ -124,7 +125,12 @@ where
             F::one() + n.ln()
         };
         debug_assert!(t > F::zero());
-        Ok(Zipf { s, t, q })
+        Ok(Zipf {
+            s,
+            t,
+            q,
+            n_floor: n.floor(),
+        })
     }
 
     /// Inverse cumulative density function
@@ -152,7 +158,7 @@ where
         let one = F::one();
         loop {
             let inv_b = self.inv_cdf(rng.sample(StandardUniform));
-            let x = (inv_b + one).floor();
+            let x = (inv_b + one).floor().min(self.n_floor);
             let mut ratio = x.powf(-self.s);
             if x > one {
                 ratio = ratio * inv_b.powf(self.s)

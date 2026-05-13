@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Testing
 - Added a parameter fuzzing script to search for panics and invalid output ([#53])
 
+### Fixes
+- Fix Zipf returning values larger than `n` in rare cases ([#57])
+
 ## [0.6.0] — 2026-02-10
 - Bump to MSRV 1.85.0 and Edition 2024 in line with `rand` ([#28])
 - Update `rand` to version 0.10.0 ([#31], [#48])
@@ -162,6 +165,7 @@ Initial release. This is equivalent to the code in `rand` 0.6.5.
 [#46]: https://github.com/rust-random/rand_distr/pull/46
 [#48]: https://github.com/rust-random/rand_distr/pull/48
 [#53]: https://github.com/rust-random/rand_distr/pull/53
+[#57]: https://github.com/rust-random/rand_distr/pull/57
 [rand#840]: https://github.com/rust-random/rand/pull/840
 [rand#847]: https://github.com/rust-random/rand/pull/847
 [rand#891]: https://github.com/rust-random/rand/pull/891

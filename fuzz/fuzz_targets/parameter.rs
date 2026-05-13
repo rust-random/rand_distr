@@ -445,7 +445,8 @@ fn sample_one(rng: &mut TestRng, params: &Parameters) -> Option<()> {
         }
         P::Zipf { n, s } => {
             let v = black_box(Zipf::new(n, s).ok()?.sample(rng));
-            assert!(v >= 0.0 && (v.is_infinite() || v.fract() == 0.0), "{}", v);
+            assert!((v.is_infinite() || v.fract() == 0.0), "{}", v);
+            assert!(v >= 0.0 && v <= n.floor(), "{}", v);
         }
     }
     Some(())
