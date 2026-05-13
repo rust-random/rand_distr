@@ -61,6 +61,7 @@ where
     s: F,
     t: F,
     q: F,
+    n_floor: F,
 }
 
 /// Error type returned from [`Zipf::new`].
@@ -124,7 +125,12 @@ where
             F::one() + n.ln()
         };
         debug_assert!(t > F::zero());
-        Ok(Zipf { s, t, q })
+        Ok(Zipf {
+            s,
+            t,
+            q,
+            n_floor: n.floor(),
+        })
     }
 
     /// Inverse cumulative density function
@@ -152,7 +158,7 @@ where
         let one = F::one();
         loop {
             let inv_b = self.inv_cdf(rng.sample(StandardUniform));
-            let x = (inv_b + one).floor();
+            let x = (inv_b + one).floor().min(self.n_floor);
             let mut ratio = x.powf(-self.s);
             if x > one {
                 ratio = ratio * inv_b.powf(self.s)
@@ -203,7 +209,7 @@ mod tests {
         let mut rng = crate::test::rng(2);
         for _ in 0..1000 {
             let r = d.sample(&mut rng);
-            assert!(r >= 1.);
+            assert!(r >= 1. && r <= 10.0);
         }
     }
 
@@ -213,7 +219,7 @@ mod tests {
         let mut rng = crate::test::rng(2);
         for _ in 0..1000 {
             let r = d.sample(&mut rng);
-            assert!(r >= 1.);
+            assert!(r >= 1. && r <= 10.0);
         }
     }
 
@@ -223,7 +229,7 @@ mod tests {
         let mut rng = crate::test::rng(2);
         for _ in 0..1000 {
             let r = d.sample(&mut rng);
-            assert!(r >= 1.);
+            assert!(r >= 1. && r <= 10.0);
         }
         // TODO: verify that this is a uniform distribution
     }
@@ -244,7 +250,7 @@ mod tests {
         let mut rng = crate::test::rng(2);
         for _ in 0..1000 {
             let r = d.sample(&mut rng);
-            assert!(r >= 1.);
+            assert!(r >= 1. && r <= f64::MAX);
         }
         // TODO: verify that this is a zeta distribution
     }
