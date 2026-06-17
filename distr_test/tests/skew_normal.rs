@@ -110,10 +110,10 @@ fn owen_t(h: f64, a: f64) -> f64 {
             1.679_303_108_454_609e-3,
         ];
 
-        let hrange = [
+        let h_range = [
             0.02, 0.06, 0.09, 0.125, 0.26, 0.4, 0.6, 1.6, 1.7, 2.33, 2.4, 3.36, 3.4, 4.8,
         ];
-        let arange = [0.025, 0.09, 0.15, 0.36, 0.5, 0.9, 0.99999];
+        let a_range = [0.025, 0.09, 0.15, 0.36, 0.5, 0.9, 0.99999];
 
         let select = [
             [1, 1, 2, 13, 13, 13, 13, 13, 13, 13, 13, 16, 16, 16, 9],
@@ -126,15 +126,15 @@ fn owen_t(h: f64, a: f64) -> f64 {
             [2, 3, 4, 4, 6, 6, 18, 18, 18, 18, 17, 17, 17, 12, 12],
         ];
 
-        let ihint = hrange.iter().position(|&r| h < r).unwrap_or(14);
+        let ih_int = h_range.iter().position(|&r| h < r).unwrap_or(14);
 
-        let iaint = arange.iter().position(|&r| a < r).unwrap_or(7);
+        let ia_int = a_range.iter().position(|&r| a < r).unwrap_or(7);
 
-        let icode = select[iaint][ihint];
+        let i_code = select[ia_int][ih_int] - 1;
         let m = [
             2, 3, 4, 5, 7, 10, 12, 18, 10, 20, 30, 20, 4, 7, 8, 20, 13, 0,
-        ][icode - 1];
-        let method = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 4, 4, 4, 4, 5, 6][icode - 1];
+        ][i_code];
+        let method = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 4, 4, 4, 4, 5, 6][i_code];
 
         match method {
             1 => {
