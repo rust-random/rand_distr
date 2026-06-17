@@ -12,17 +12,17 @@ use rand_distr::multi::Dirichlet;
 
 /// Some distributions are parameterized by F: Float; various floating point
 /// types behave similarly but precision and range differences make them not
-/// perfectly interchangable.
+/// perfectly interchangeable.
 type Float = f32;
 
 /// Model all distribution parameters in one struct; this can be more awkward
 /// to control compared to separate fuzzers, but is easier to use.
 #[derive(Debug, Clone, Copy, Arbitrary)]
 enum Parameters {
-    BernouilliFloat {
+    BernoulliFloat {
         p: f64,
     },
-    BernouilliRatio {
+    BernoulliRatio {
         num: u32,
         denom: u32,
     },
@@ -215,10 +215,10 @@ fn sample_one(rng: &mut TestRng, params: &Parameters) -> Option<()> {
     use std::hint::black_box;
 
     match *params {
-        P::BernouilliFloat { p } => {
+        P::BernoulliFloat { p } => {
             black_box(Bernoulli::new(p).ok()?.sample(rng));
         }
-        P::BernouilliRatio { num, denom } => {
+        P::BernoulliRatio { num, denom } => {
             black_box(Bernoulli::from_ratio(num, denom).ok()?.sample(rng));
         }
         P::Beta { alpha, beta } => {
