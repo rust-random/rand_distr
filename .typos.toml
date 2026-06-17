@@ -1,0 +1,5 @@
+[default]
+extend-ignore-re = ["Comput\\.", "Commun\\."]
+
+[default.extend-words]
+"numer" = "numer"
