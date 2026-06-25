@@ -245,7 +245,7 @@ pub enum Error {
     AlphaInfinite,
     /// Failed to create required Gamma distribution(s).
     FailedToCreateGamma,
-    /// Failed to create required Beta distribition(s).
+    /// Failed to create required Beta distribution(s).
     FailedToCreateBeta,
     /// `size < 2`.
     SizeTooSmall,
