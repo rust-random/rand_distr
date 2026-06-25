@@ -306,6 +306,42 @@ fn beta() {
 }
 
 #[test]
+fn inverse_gaussian() {
+    use rand_distr::InverseGaussian;
+    fn norm_cdf(x: f64, mu: f64, sigma: f64) -> f64 {
+        use special::Primitive;
+        0.5 * (1.0 + Primitive::erf((x - mu) / (sigma * 2.0.sqrt())))
+    }
+    fn std_cdf(x: f64) -> f64 {
+        norm_cdf(x, 0.0, 1.0)
+    }
+
+    fn cdf(x: f64, mean: f64, shape: f64) -> f64 {
+        if x < 0.0 {
+            return 0.0;
+        }
+        std_cdf((shape / x).sqrt() * (x / mean - 1.0))
+            + (2.0 * shape / mean).exp() * std_cdf(-(shape / x).sqrt() * (x / mean + 1.0))
+    }
+
+    // mu, lambda
+    let parameters = [
+        (1.0, 1e-3),
+        (0.5, 1.0),
+        (1.0, 0.5),
+        (1.0, 1.0),
+        (1.0, 2.0),
+        (2.0, 1.0),
+        (1.0, 1e3),
+    ];
+
+    for (seed, (mean, shape)) in parameters.into_iter().enumerate() {
+        let dist = InverseGaussian::new(mean, shape).unwrap();
+        test_continuous(seed as u64, dist, |x| cdf(x, mean, shape));
+    }
+}
+
+#[test]
 fn triangular() {
     fn cdf(x: f64, a: f64, b: f64, c: f64) -> f64 {
         if x <= a {
