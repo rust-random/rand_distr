@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixes
 - Avoid returning negative values in `InverseGaussian::sample`; this is a Value-breaking change ([#56])
 - Fix Zipf returning values larger than `n` in rare cases ([#57])
+- Changed threshold for Ahrens-Dieter PD algorithm to >=10, matching the suggested value in the original 1982 paper
 
 ## [0.6.0] — 2026-02-10
 - Bump to MSRV 1.85.0 and Edition 2024 in line with `rand` ([#28])
