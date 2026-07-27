@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a parameter fuzzing script to search for panics and invalid output ([#53])
 
 ### Fixes
+- Fix overflow in `Hypergeometric::new` for populations near `u64::MAX` that corrupted the sampler and could panic ([#60])
 - Avoid returning negative values in `InverseGaussian::sample`; this is a Value-breaking change ([#56])
 - Fix Zipf returning values larger than `n` in rare cases ([#57])
 - Changed threshold for Ahrens-Dieter PD algorithm to >=10, matching the suggested value in the original 1982 paper
@@ -167,6 +168,7 @@ Initial release. This is equivalent to the code in `rand` 0.6.5.
 [#46]: https://github.com/rust-random/rand_distr/pull/46
 [#48]: https://github.com/rust-random/rand_distr/pull/48
 [#53]: https://github.com/rust-random/rand_distr/pull/53
+[#60]: https://github.com/rust-random/rand_distr/pull/60
 [#56]: https://github.com/rust-random/rand_distr/pull/56
 [#57]: https://github.com/rust-random/rand_distr/pull/57
 [rand#840]: https://github.com/rust-random/rand/pull/840
