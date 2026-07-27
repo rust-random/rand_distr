@@ -201,7 +201,7 @@ impl Hypergeometric {
         // J. Statist. Comput. Simul. Vol.22 (August 1985), 127-145
         // https://www.researchgate.net/publication/233212638
         const HIN_THRESHOLD: f64 = 10.0;
-        let m = ((k + 1) as f64 * (n1 + 1) as f64 / (n + 2) as f64).floor();
+        let m = ((k + 1) as f64 * (n1 + 1) as f64 / (n as f64 + 2.0)).floor();
         let sampling_method = if m - f64::max(0.0, k as f64 - n2 as f64) < HIN_THRESHOLD {
             let (initial_p, initial_x) = if k < n2 {
                 (
@@ -496,6 +496,19 @@ mod test {
         test_hypergeometric_mean_and_variance(5000, 2500, 500, &mut rng);
         test_hypergeometric_mean_and_variance(10100, 10000, 1000, &mut rng);
         test_hypergeometric_mean_and_variance(100100, 100, 10000, &mut rng);
+    }
+
+    #[test]
+    fn test_hypergeometric_near_max_population() {
+        // `n + 2` used to be computed in u64 and overflowed when the
+        // population approached u64::MAX, corrupting the mode `m` (and the
+        // sampling-method selection). Constructing and sampling must work.
+        let mut rng = crate::test::rng(738);
+        let d = Hypergeometric::new(u64::MAX - 1, 3, 2).unwrap();
+        for _ in 0..1000 {
+            let x = d.sample(&mut rng);
+            assert!(x <= 2);
+        }
     }
 
     #[test]
